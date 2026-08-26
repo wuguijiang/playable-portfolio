@@ -127,7 +127,7 @@ const experiences = [
     id: 'exp-playable',
     period: '近期',
     title: 'Cocos 试玩广告 · 个人项目',
-    desc: '基于 Cocos Creator 制作 6 款试玩广告，覆盖 2D / 3D、解压、三消、闯关、模拟经营四类。',
+    desc: '基于 Cocos Creator 制作多款试玩广告，覆盖 2D / 3D、解压、消除、闯关与模拟经营等玩法。',
     tags: ['Cocos Creator', 'TypeScript', '试玩广告', 'MCP'],
   },
   {

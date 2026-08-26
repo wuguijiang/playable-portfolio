@@ -115,7 +115,7 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
             @click="reloadIframe"
           >↻ 重新加载</button>
           <span class="play-frame-tip">
-            {{ active.hasPlayable ? '已挂载 · 鼠标点击屏幕跳跃' : '点击其他游戏即可切换' }}
+            {{ active.hasPlayable ? active.iframeTip : '点击其他游戏即可切换' }}
           </span>
         </div>
       </div>
@@ -139,12 +139,10 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
           <span v-for="tag in active.tags" :key="tag">{{ tag }}</span>
         </div>
 
-        <div class="play-control-tips">
+        <div v-if="active.controls" class="play-control-tips">
           <h4>怎么玩</h4>
           <ul>
-            <li>📱 移动端：<b>点击屏幕</b> = 跳跃</li>
-            <li>💻 桌面端：<b>点击</b> = 跳跃 · <b>长按</b> = 二段跳</li>
-            <li>🥕 吃到最多萝卜 = 最佳成绩</li>
+            <li v-for="control in active.controls" :key="control">{{ control }}</li>
           </ul>
         </div>
       </aside>

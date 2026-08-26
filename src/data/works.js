@@ -1,4 +1,4 @@
-// 共享数据：试玩广告作品（含 1 个真实可玩的 rabbit + 6 个设计稿）
+// 共享数据：试玩广告作品（含 2 个真实可玩的游戏 + 6 个设计稿）
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
@@ -9,6 +9,7 @@ import stackRushCover from '../assets/covers/stack-rush.png'
 import candyPourCover from '../assets/covers/candy-pour.png'
 import puppyPathCover from '../assets/covers/puppy-path.png'
 import rabbitCover from '../assets/covers/rabbit.svg'
+import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 
 export const works = [
   {
@@ -27,6 +28,35 @@ export const works = [
     tags: ['跑酷', '点击', '二段跳', '节奏'],
     hasPlayable: true,
     playableSrc: '/playable/rabbit.html',
+    iframeTip: '已挂载 · 鼠标点击屏幕跳跃',
+    controls: [
+      '移动端：点击屏幕即可跳跃',
+      '桌面端：点击跳跃，长按可二段跳',
+      '吃到更多萝卜，刷新最佳成绩',
+    ],
+  },
+  {
+    id: 'lianliankan',
+    title: 'ANIMAL LINK',
+    subtitle: '森林连连看',
+    type: '消除',
+    label: '点击 / 连线',
+    dimension: '2D',
+    colors: ['#68ad6a', '#ffe39a'],
+    cover: lianliankanCover,
+    description: '在童话森林里找出成对的动物图案，用不超过两次转折的连线把它们全部消除。',
+    longDescription: '这是一款基于 Cocos Creator 制作的轻量级动物连连看试玩广告。玩家在限定时间内点击两张相同的动物图案完成消除，清空棋盘后进入下一关。玩法规则直观，配合明快的森林主题与即时消除反馈，让用户可以在几秒内理解目标并动手体验。',
+    engine: 'Cocos Creator 3.x',
+    platform: 'Web / H5',
+    tags: ['连连看', '动物消除', '关卡', '轻量交互'],
+    hasPlayable: true,
+    playableSrc: '/playable/lianliankan.html',
+    iframeTip: '已挂载 · 点击两张相同的动物图案消除',
+    controls: [
+      '点击两张相同的动物图案进行匹配',
+      '连线最多只能有两次转折',
+      '清空棋盘后即可进入下一关',
+    ],
   },
   {
     id: '1',
@@ -114,4 +144,4 @@ export const works = [
   },
 ]
 
-export const workTypes = ['全部', '解压', '收集', '闯关', '经营']
+export const workTypes = ['全部', '解压', '消除', '收集', '闯关', '经营']
