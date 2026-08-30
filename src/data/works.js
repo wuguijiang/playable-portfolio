@@ -1,7 +1,8 @@
-// 共享数据：试玩广告作品（含 2 个真实可玩的游戏 + 6 个设计稿）
+// 共享数据：试玩广告作品（含 3 个真实可玩的游戏 + 6 个设计稿）
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
+import beachToastCover from '../assets/covers/beach-toast.png'
 import sushiSortCover from '../assets/covers/sushi-sort.png'
 import tidyTownCover from '../assets/covers/tidy-town.png'
 import gemGardenCover from '../assets/covers/gem-garden.png'
@@ -12,6 +13,33 @@ import rabbitCover from '../assets/covers/rabbit.svg'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 
 export const works = [
+  {
+    id: 'beach-toast',
+    title: 'BEACH TOAST',
+    subtitle: '海滩碰杯',
+    type: '合成',
+    label: '拖拽 / 碰杯',
+    dimension: '2D',
+    colors: ['#ffb347', '#33c7c4'],
+    cover: beachToastCover,
+    description: '在海边木桌上拖动饮料杯，把相同杯子碰在一起合成更高级饮品，完成订单拿金币。',
+    longDescription: '这是一款基于 Cocos Creator 制作的海滩饮品合成试玩广告。玩家拖动杯子进行碰杯合成，把冰水、汽水、果汁和特调饮品一步步升级，观察上方订单目标并优先合成对应饮品，在轻松明亮的海滩氛围里完成连续奖励。',
+    engine: 'Cocos Creator 3.x',
+    platform: 'Web / H5',
+    tags: ['合成', '拖拽', '碰杯', '订单目标'],
+    hasPlayable: true,
+    playableSrc: '/playable/beach-toast.html',
+    iframeTip: '已挂载 · 拖动相同杯子碰杯合成',
+    orientationSwitch: {
+      defaultMode: 'portrait',
+      hint: '这个试玩支持横竖屏切换，可用试玩框下方按钮切换当前画面方向。',
+    },
+    controls: [
+      '拖动杯子到相同饮品上进行合成',
+      '观察上方订单，优先合成目标饮品',
+      '连续完成订单可以获得更多金币',
+    ],
+  },
   {
     id: 'rabbit',
     title: 'RABBIT',
@@ -144,4 +172,4 @@ export const works = [
   },
 ]
 
-export const workTypes = ['全部', '解压', '消除', '收集', '闯关', '经营']
+export const workTypes = ['全部', ...Array.from(new Set(works.map((work) => work.type)))]

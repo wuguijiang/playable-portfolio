@@ -9,6 +9,7 @@ const filteredWorks = computed(() => (
     ? works
     : works.filter((game) => game.type === activeFilter.value)
 ))
+const typeCount = computed(() => new Set(works.map((game) => game.type)).size)
 
 // 每张卡片点进去都进试玩中心 /play
 // 有 playableSrc 的会真挂 iframe，没有的会在 Play 页显示"设计稿 · 暂未打包"
@@ -31,14 +32,14 @@ function playHref(idx) {
         <span>玩玩。</span>
       </h1>
       <p class="works-intro">
-        这里收录我用 Cocos Creator 做的 {{ works.length }} 款试玩广告，按类型分了解压 / 三消 / 闯关 / 经营。
+        这里收录我用 Cocos Creator 做的 {{ works.length }} 款试玩广告，按类型分了合成 / 解压 / 消除 / 闯关 / 经营。
         点击任意一张可以查看 1:1 封面 + 详细说明。
       </p>
 
       <div class="works-stats">
         <div><b>{{ works.length }}</b><span>个作品</span></div>
         <div><b>2D · 3D</b><span>形态</span></div>
-        <div><b>4</b><span>类型覆盖</span></div>
+        <div><b>{{ typeCount }}</b><span>类型覆盖</span></div>
         <div><b>TS</b><span>开发语言</span></div>
       </div>
     </section>

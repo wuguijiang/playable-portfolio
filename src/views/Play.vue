@@ -5,9 +5,33 @@ import { works } from '../data/works.js'
 
 const route = useRoute()
 
-// 默认进入页面时选中真实可玩的 rabbit
-const activeId = ref('rabbit')
+// 默认进入页面时选中最新接入的真实试玩
+const activeId = ref('beach-toast')
 const active = computed(() => works.find((w) => w.id === activeId.value) || works[0])
+const orientationMode = ref('portrait')
+const iframeRef = ref(null)
+const supportsOrientationSwitch = computed(() => Boolean(active.value.orientationSwitch))
+const isLandscape = computed(() => supportsOrientationSwitch.value && orientationMode.value === 'landscape')
+const aspectLabel = computed(() => (isLandscape.value ? '16:9 · 横屏' : '9:16 · 竖屏'))
+const orientationButtonLabel = computed(() => (isLandscape.value ? '切到竖屏' : '切到横屏'))
+
+function resetOrientationForActive() {
+  orientationMode.value = active.value.orientationSwitch?.defaultMode || 'portrait'
+}
+
+function notifyIframeResize() {
+  nextTick(() => {
+    const frameWindow = iframeRef.value?.contentWindow
+    if (!frameWindow) return
+    frameWindow.dispatchEvent(new frameWindow.Event('resize'))
+  })
+}
+
+function toggleOrientation() {
+  if (!supportsOrientationSwitch.value) return
+  orientationMode.value = isLandscape.value ? 'portrait' : 'landscape'
+  notifyIframeResize()
+}
 
 // 从 URL 读 ?game= 自动选中（比如从作品页点过来）
 function syncFromQuery() {
@@ -47,6 +71,7 @@ function selectGame(game) {
 
 // 切换 game 时把页面滚回顶部（用户可能在底部列表点击）
 watch(activeId, () => {
+  resetOrientationForActive()
   nextTick(() => {
     const stage = document.querySelector('.play-stage')
     if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -64,14 +89,19 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span> PLAY / TRY NOW</p>
       <h1>亲自动手，<em>体验一下</em>。</h1>
       <p class="play-hero-intro">
-        下面是我用 Cocos Creator 真实打包的试玩广告，9:16 真实尺寸，可直接玩。
+        下面是我用 Cocos Creator 真实打包的试玩广告，默认 9:16，可直接玩。
+        支持横竖屏的游戏会显示方向切换按钮。
         加载需要几秒，耐心等一下。
       </p>
     </section>
 
     <!-- Stage: 9:16 iframe + 描述 -->
     <section class="play-stage shell">
-      <div class="play-frame" :style="{ '--primary': active.colors[0], '--secondary': active.colors[1] }">
+      <div
+        class="play-frame"
+        :class="{ 'is-landscape': isLandscape }"
+        :style="{ '--primary': active.colors[0], '--secondary': active.colors[1] }"
+      >
         <div class="phone-frame">
           <div class="phone-notch" aria-hidden="true"></div>
           <div class="phone-screen">
@@ -90,11 +120,12 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
                 </button>
                 <span v-else class="play-soon">设计稿 · 暂未打包</span>
               </div>
-              <span class="play-cover-tag">9:16 · {{ active.dimension }}</span>
+              <span class="play-cover-tag">{{ aspectLabel }} · {{ active.dimension }}</span>
             </div>
             <!-- 挂载后用 iframe 嵌入 -->
             <iframe
               v-else
+              ref="iframeRef"
               :key="iframeKey"
               :src="active.playableSrc"
               class="play-iframe"
@@ -108,12 +139,20 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
           <div class="phone-home" aria-hidden="true"></div>
         </div>
         <div class="play-frame-actions">
-          <button
-            v-if="iframeMounted && active.playableSrc"
-            type="button"
-            class="play-reload"
-            @click="reloadIframe"
-          >↻ 重新加载</button>
+          <div class="play-frame-buttons">
+            <button
+              v-if="supportsOrientationSwitch"
+              type="button"
+              class="play-orientation"
+              @click="toggleOrientation"
+            >↔ {{ orientationButtonLabel }}</button>
+            <button
+              v-if="iframeMounted && active.playableSrc"
+              type="button"
+              class="play-reload"
+              @click="reloadIframe"
+            >↻ 重新加载</button>
+          </div>
           <span class="play-frame-tip">
             {{ active.hasPlayable ? active.iframeTip : '点击其他游戏即可切换' }}
           </span>
@@ -137,6 +176,11 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
 
         <div class="play-tags">
           <span v-for="tag in active.tags" :key="tag">{{ tag }}</span>
+        </div>
+
+        <div v-if="supportsOrientationSwitch" class="play-orientation-note">
+          <b>横竖屏切换</b>
+          <p>{{ active.orientationSwitch.hint }}</p>
         </div>
 
         <div v-if="active.controls" class="play-control-tips">

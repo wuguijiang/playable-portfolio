@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { works, workTypes } from '../data/works.js'
-import rabbitCover from '../assets/covers/rabbit.svg'
 
 const profile = {
   name: '梨花詩',
@@ -127,7 +126,7 @@ const experiences = [
     id: 'exp-playable',
     period: '近期',
     title: 'Cocos 试玩广告 · 个人项目',
-    desc: '基于 Cocos Creator 制作多款试玩广告，覆盖 2D / 3D、解压、消除、闯关与模拟经营等玩法。',
+    desc: '基于 Cocos Creator 制作多款试玩广告，覆盖 2D / 3D、合成、解压、消除、闯关与模拟经营等玩法。',
     tags: ['Cocos Creator', 'TypeScript', '试玩广告', 'MCP'],
   },
   {
@@ -156,6 +155,11 @@ const process = [
 
 // 主页精选：只展示 4 个，避免跟 Works 页完全重复
 const featuredWorks = computed(() => works.slice(0, 4))
+const ctaPlayable = computed(() => works.find((game) => game.id === 'beach-toast') || works.find((game) => game.hasPlayable) || works[0])
+const ctaPlayableHref = computed(() => {
+  const idx = works.findIndex((game) => game.id === ctaPlayable.value?.id)
+  return `/play?game=${idx >= 0 ? idx : 0}`
+})
 
 const skillMax = 5
 function skillPercent(level) {
@@ -372,16 +376,16 @@ function skillPercent(level) {
         <p class="section-note">下面是我用 Cocos Creator 真实打包的 9:16 试玩广告，点开就能玩。</p>
       </header>
 
-      <router-link to="/play" class="playable-cta">
+      <router-link :to="ctaPlayableHref" class="playable-cta">
         <div class="playable-cta-art">
-          <img :src="rabbitCover" alt="Rabbit 试玩封面" />
-          <span class="playable-cta-tag">9:16 · 2D 跑酷</span>
+          <img :src="ctaPlayable.cover" :alt="`${ctaPlayable.subtitle}试玩封面`" />
+          <span class="playable-cta-tag">9:16 · {{ ctaPlayable.dimension }} {{ ctaPlayable.type }}</span>
           <span class="playable-cta-pulse" aria-hidden="true"></span>
         </div>
         <div class="playable-cta-body">
-          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> RABBIT · COCOS PLAYABLE</p>
-          <h3>小兔子跑酷</h3>
-          <p>点屏幕 = 跳跃，长按 = 二段跳。吃最多萝卜，看你能拿多少分。</p>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> {{ ctaPlayable.title }} · COCOS PLAYABLE</p>
+          <h3>{{ ctaPlayable.subtitle }}</h3>
+          <p>{{ ctaPlayable.description }}</p>
           <span class="playable-cta-go">点击进入试玩中心 →</span>
         </div>
       </router-link>
