@@ -1,9 +1,10 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import shiLogo from './assets/shi-logo.png'
 
 const route = useRoute()
+const menuOpen = ref(false)
 const navItems = [
   { label: '首页', anchor: 'top', page: 'home' },
   { label: '技术栈', anchor: 'skills', page: 'home' },
@@ -18,6 +19,17 @@ function navHref(item) {
   if (route.name === 'tools' || route.name === 'play') return `/#${item.anchor}`
   return `#${item.anchor}`
 }
+
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+}
+
+function closeMenu() {
+  menuOpen.value = false
+}
+
+// 路由切换时自动收起抽屉
+watch(() => route.fullPath, closeMenu)
 </script>
 
 <template>
@@ -44,9 +56,46 @@ function navHref(item) {
         </router-link>
       </nav>
 
-      <a class="contact-link" href="mailto:2926044894@qq.com">求职中 · 可联系 ↗</a>
+      <div class="topbar-right">
+        <a class="contact-link" href="mailto:2926044894@qq.com">求职中 · 可联系 ↗</a>
+        <button
+          class="nav-toggle"
+          :class="{ open: menuOpen }"
+          type="button"
+          :aria-expanded="menuOpen"
+          aria-label="打开菜单"
+          @click="toggleMenu"
+        >
+          <span></span>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- 移动端抽屉导航 -->
+  <transition name="mobile-nav">
+    <div v-if="menuOpen" class="mobile-nav-backdrop" @click.self="closeMenu">
+      <nav class="mobile-nav" aria-label="移动端导航">
+        <div class="mobile-nav-head">
+          <b>梨花詩</b>
+          <button class="mobile-nav-close" type="button" aria-label="关闭菜单" @click="closeMenu">×</button>
+        </div>
+        <router-link
+          v-for="item in navItems"
+          :key="item.label"
+          :to="navHref(item)"
+          :class="{ active: item.page && item.page === route.name }"
+          @click="closeMenu"
+        >
+          {{ item.label }}
+          <span class="arrow">→</span>
+        </router-link>
+        <div class="mobile-nav-contact">
+          <a href="mailto:2926044894@qq.com">求职中 · 可联系 ↗</a>
+        </div>
+      </nav>
+    </div>
+  </transition>
 
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">

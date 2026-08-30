@@ -3,4 +3,8 @@ import App from './App.vue'
 import router from './router'
 import './styles.css'
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual'
+}
+
 createApp(App).use(router).mount('#app')
