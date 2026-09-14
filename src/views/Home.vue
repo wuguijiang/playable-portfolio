@@ -362,7 +362,7 @@ function skillPercent(level) {
               <h3>{{ game.title }}</h3>
               <span>{{ game.subtitle }}</span>
             </div>
-            <span class="card-id">0{{ game.id }}</span>
+            <span class="card-id">{{ String(idx + 1).padStart(2, '0') }}</span>
           </div>
         </router-link>
       </div>

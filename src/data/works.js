@@ -1,4 +1,4 @@
-// 共享数据：试玩广告作品（含 3 个真实可玩的游戏 + 6 个设计稿）
+// 共享数据：试玩广告作品（含 4 个真实可玩的游戏 + 6 个设计稿）
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
@@ -11,8 +11,32 @@ import candyPourCover from '../assets/covers/candy-pour.png'
 import puppyPathCover from '../assets/covers/puppy-path.png'
 import rabbitCover from '../assets/covers/rabbit.svg'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
+import xiangqiCover from '../assets/covers/xiangqi.png'
 
 export const works = [
+  {
+    id: 'xiangqi',
+    title: 'XIANGQI',
+    subtitle: '欢乐象棋',
+    type: '对弈',
+    label: '点击 / 走子',
+    dimension: '2D',
+    colors: ['#c8372c', '#e0a83e'],
+    cover: xiangqiCover,
+    description: '水墨国风的象棋对弈试玩。点一颗棋子就能看到所有合法走法，可吃子的位置会标出红环。',
+    longDescription: '这是一款基于 Cocos Creator 制作的中国象棋试玩广告，整体是水墨国风：宣纸底、竹影、红灯笼与茶台。玩家点选棋子后，棋盘会实时画出可落子的蓝点和可吃子的红环，走子、吃子与将军都有对应的提示和反馈。支持人机对战（玩家执红、AI 执黑，可选简单 / 中等 / 困难）与双人对战两种模式，配合悔棋、新对局、暂停和胜负结算，把一局完整的象棋压成打开就能上手的试玩体验。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['中国象棋', 'AI 对弈', '走法提示', '水墨国风'],
+    hasPlayable: true,
+    playableSrc: '/playable/xiangqi.html',
+    iframeTip: '已挂载 · 点选棋子，蓝点是可落子、红环是可吃子',
+    controls: [
+      '点击自己的棋子，棋盘会显示所有可走位置',
+      '蓝点表示可以落子，红环表示可以吃掉对方棋子',
+      '人机模式可选简单 / 中等 / 困难，走错了可以悔棋',
+    ],
+  },
   {
     id: 'beach-toast',
     title: 'BEACH TOAST',

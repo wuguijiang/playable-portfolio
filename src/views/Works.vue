@@ -13,8 +13,11 @@ const typeCount = computed(() => new Set(works.map((game) => game.type)).size)
 
 // 每张卡片点进去都进试玩中心 /play
 // 有 playableSrc 的会真挂 iframe，没有的会在 Play 页显示"设计稿 · 暂未打包"
-function playHref(idx) {
-  return `/play?game=${idx}`
+// 注意：Play 页是按 works 里的全局下标取游戏的，所以这里必须传全局下标，
+// 不能用筛选后列表的 idx，否则切了类型会跳到别的游戏。
+function playHref(game) {
+  const idx = works.findIndex((item) => item.id === game.id)
+  return `/play?game=${idx >= 0 ? idx : 0}`
 }
 </script>
 
@@ -63,15 +66,15 @@ function playHref(idx) {
     <!-- Works grid -->
     <section class="works-grid shell">
       <router-link
-        v-for="(game, idx) in filteredWorks"
+        v-for="game in filteredWorks"
         :key="game.id"
-        :to="playHref(idx)"
+        :to="playHref(game)"
         class="work-card"
         :style="{ '--primary': game.colors[0], '--secondary': game.colors[1] }"
       >
         <div class="work-art">
           <img :src="game.cover" :alt="`${game.subtitle}游戏封面`" />
-          <span class="work-id">0{{ idx + 1 }}</span>
+          <span class="work-id">{{ String(works.findIndex((item) => item.id === game.id) + 1).padStart(2, '0') }}</span>
           <span class="work-tag">COCOS · {{ game.dimension }}</span>
           <span class="work-type" :style="{ background: game.colors[0] }">{{ game.type }}</span>
           <span v-if="game.hasPlayable" class="work-badge">PLAYABLE</span>
