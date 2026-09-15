@@ -1,4 +1,4 @@
-// 共享数据：试玩广告作品（含 4 个真实可玩的游戏 + 6 个设计稿）
+// 共享数据：试玩广告作品（含 5 个真实可玩的游戏 + 6 个设计稿）
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
@@ -12,8 +12,32 @@ import puppyPathCover from '../assets/covers/puppy-path.png'
 import rabbitCover from '../assets/covers/rabbit.svg'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 import xiangqiCover from '../assets/covers/xiangqi.png'
+import daxiguaCover from '../assets/covers/daxigua.png'
 
 export const works = [
+  {
+    id: 'daxigua',
+    title: 'MELON MERGE',
+    subtitle: '合成大西瓜',
+    type: '合成',
+    label: '拖动 / 合成',
+    dimension: '2D',
+    colors: ['#63b96f', '#ffc2b0'],
+    cover: daxiguaCover,
+    description: '把水果丢进框里，两个同级的水果碰到一起就会合成更大的水果，看看能不能合出大西瓜。',
+    longDescription: '这是一款基于 Cocos Creator 制作的「合成大西瓜」试玩广告。按住左右拖动决定落点，松手让水果掉下去，两个同级水果相撞会合成高一级的水果，从樱桃一路合成橘子、苹果、菠萝、葡萄、香蕉、桃子，最终合出大西瓜。水果会真实堆叠滚动，堆过警戒线就结束，需要提前规划落点顺序。带实时分数、最高分记录、暂停面板、结算面板与音效开关。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['合成', '物理堆叠', '水果', '分数挑战'],
+    hasPlayable: true,
+    playableSrc: '/playable/daxigua.html',
+    iframeTip: '已挂载 · 拖动决定落点，松手投放',
+    controls: [
+      '按住左右拖动，决定水果从哪个位置落下',
+      '两个相同的水果碰到一起会合成更大的水果',
+      '堆过警戒线就结束，优先往两侧腾空间',
+    ],
+  },
   {
     id: 'xiangqi',
     title: 'XIANGQI',
