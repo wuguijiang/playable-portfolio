@@ -2,6 +2,7 @@
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
+import tetrisCover from '../assets/covers/tetris.svg'
 import beachToastCover from '../assets/covers/beach-toast.png'
 import sushiSortCover from '../assets/covers/sushi-sort.png'
 import tidyTownCover from '../assets/covers/tidy-town.png'
@@ -15,6 +16,29 @@ import xiangqiCover from '../assets/covers/xiangqi.png'
 import daxiguaCover from '../assets/covers/daxigua.png'
 
 export const works = [
+  {
+    id: 'tetris',
+    title: 'TETRIS',
+    subtitle: '俄罗斯方块',
+    type: '休闲',
+    label: '旋转 / 消行',
+    dimension: '2D',
+    colors: ['#9B7BC4', '#7FD4A8'],
+    cover: tetrisCover,
+    description: '经典俄罗斯方块：旋转方块把它填满一整行就能消除，消得越多、等级越高、落得越快。',
+    longDescription: '这是一款基于 Cocos Creator 制作的俄罗斯方块试玩广告，整体是薰衣草紫的清爽配色。方块自动下落，方向键左右移动、上键旋转方向，下键加速下落、空格直接速降。填满一整行即可消除并得分，等级随消行数提升，方块下落速度也会同步加快。界面右侧实时显示 NEXT 预告块、得分、等级与消行数，并带有暂停与重开。移动端提供十字方向键与 DROP 按钮，触屏操作同样顺手。',
+    engine: 'Cocos Creator 3.x',
+    platform: 'Web / H5',
+    tags: ['俄罗斯方块', '旋转', '消行', '分数挑战'],
+    hasPlayable: true,
+    playableSrc: '/playable/tetris.html',
+    iframeTip: '已挂载 · ←→ 移动，↑ 旋转，空格速降',
+    controls: [
+      '← → 左右移动方块，↑ 旋转方向',
+      '↓ 加速下落，空格直接速降',
+      '填满一整行即可消除，等级越高下落越快',
+    ],
+  },
   {
     id: 'daxigua',
     title: 'MELON MERGE',

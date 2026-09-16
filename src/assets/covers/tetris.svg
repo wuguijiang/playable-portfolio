@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1500" width="900" height="1500" font-family="system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+
+  <defs>
+    <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse" x="90" y="340">
+      <path d="M 52 0 L 0 0 0 52" fill="none" stroke="#D4C5EE" stroke-width="2"/>
+    </pattern>
+
+    <g id="qb">
+      <rect x="2" y="2" width="48" height="48" rx="9" fill="#5B9BD5"/>
+      <rect x="9" y="8" width="34" height="12" rx="4" fill="#9CC9E8"/>
+    </g>
+    <g id="qg">
+      <rect x="2" y="2" width="48" height="48" rx="9" fill="#7FD4A8"/>
+      <rect x="9" y="8" width="34" height="12" rx="4" fill="#B0E6CC"/>
+    </g>
+    <g id="qy">
+      <rect x="2" y="2" width="48" height="48" rx="9" fill="#F0C860"/>
+      <rect x="9" y="8" width="34" height="12" rx="4" fill="#F8E0A0"/>
+    </g>
+    <g id="qp">
+      <rect x="2" y="2" width="48" height="48" rx="9" fill="#E898C8"/>
+      <rect x="9" y="8" width="34" height="12" rx="4" fill="#F5C0DE"/>
+    </g>
+  </defs>
+
+  <rect width="900" height="1500" fill="#CBB8E9"/>
+
+  <rect x="363" y="70" width="36" height="36" rx="8" fill="#5B9BD5"/>
+  <rect x="409" y="70" width="36" height="36" rx="8" fill="#7FD4A8"/>
+  <rect x="455" y="70" width="36" height="36" rx="8" fill="#F0C860"/>
+  <rect x="501" y="70" width="36" height="36" rx="8" fill="#E898C8"/>
+
+  <text x="450" y="196" text-anchor="middle" font-size="92" font-weight="700" letter-spacing="8" fill="#5B3E86">TETRIS</text>
+  <text x="450" y="250" text-anchor="middle" font-size="30" letter-spacing="12" fill="#7A5FA3">俄罗斯方块</text>
+
+  <rect x="50" y="300" width="600" height="1120" rx="34" fill="#EDE3FA" stroke="#6B4E9B" stroke-width="8"/>
+  <rect x="90" y="340" width="520" height="1040" rx="14" fill="#C3ADDF"/>
+  <rect x="90" y="340" width="520" height="1040" rx="14" fill="url(#grid)"/>
+
+  <use href="#qb" x="246" y="756"/>
+  <use href="#qb" x="246" y="808"/>
+  <use href="#qb" x="298" y="808"/>
+  <use href="#qb" x="350" y="808"/>
+
+  <use href="#qb" x="90" y="1224"/>
+  <use href="#qb" x="90" y="1276"/>
+  <use href="#qb" x="142" y="1276"/>
+  <use href="#qb" x="90" y="1328"/>
+  <use href="#qb" x="142" y="1328"/>
+  <use href="#qb" x="194" y="1328"/>
+
+  <use href="#qg" x="402" y="1224"/>
+  <use href="#qg" x="402" y="1276"/>
+  <use href="#qg" x="454" y="1276"/>
+  <use href="#qg" x="350" y="1328"/>
+  <use href="#qg" x="402" y="1328"/>
+  <use href="#qg" x="454" y="1328"/>
+
+  <use href="#qp" x="558" y="1276"/>
+  <use href="#qp" x="558" y="1328"/>
+
+  <rect x="680" y="300" width="170" height="300" rx="26" fill="#D9CBF3" stroke="#A98FD1" stroke-width="5"/>
+  <text x="765" y="372" text-anchor="middle" font-size="32" font-weight="700" letter-spacing="3" fill="#5B3E86">NEXT</text>
+  <rect x="697" y="446" width="30" height="30" rx="6" fill="#7FD4A8"/>
+  <rect x="733" y="446" width="30" height="30" rx="6" fill="#7FD4A8"/>
+  <rect x="769" y="446" width="30" height="30" rx="6" fill="#7FD4A8"/>
+  <rect x="805" y="446" width="30" height="30" rx="6" fill="#7FD4A8"/>
+
+  <rect x="680" y="630" width="170" height="520" rx="26" fill="#D9CBF3" stroke="#A98FD1" stroke-width="5"/>
+  <text x="765" y="694" text-anchor="middle" font-size="28" font-weight="700" letter-spacing="2" fill="#5B3E86">SCORE</text>
+  <text x="765" y="770" text-anchor="middle" font-size="44" font-weight="700" fill="#5B3E86">得分 0</text>
+  <line x1="704" y1="812" x2="826" y2="812" stroke="#A98FD1" stroke-width="3"/>
+  <text x="765" y="866" text-anchor="middle" font-size="26" fill="#7A5FA3">等级 1</text>
+  <text x="765" y="912" text-anchor="middle" font-size="26" fill="#7A5FA3">消行 0</text>
+  <line x1="704" y1="958" x2="826" y2="958" stroke="#A98FD1" stroke-width="3" stroke-dasharray="7 7"/>
+  <text x="765" y="1002" text-anchor="middle" font-size="18" fill="#7A5FA3">← → 移动  ↑ 旋转</text>
+  <text x="765" y="1042" text-anchor="middle" font-size="18" fill="#7A5FA3">↓ 加速  空格 速降</text>
+
+  <rect x="680" y="1180" width="170" height="240" rx="26" fill="#D9CBF3" stroke="#A98FD1" stroke-width="5"/>
+  <rect x="696" y="1196" width="138" height="92" rx="46" fill="#9B7BC4" stroke="#6B4E9B" stroke-width="4"/>
+  <text x="765" y="1252" text-anchor="middle" font-size="30" font-weight="700" fill="#FFFFFF">暂停</text>
+  <rect x="696" y="1312" width="138" height="92" rx="46" fill="#9B7BC4" stroke="#6B4E9B" stroke-width="4"/>
+  <text x="765" y="1368" text-anchor="middle" font-size="30" font-weight="700" fill="#FFFFFF">重开</text>
+</svg>
