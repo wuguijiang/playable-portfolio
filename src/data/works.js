@@ -14,8 +14,32 @@ import rabbitCover from '../assets/covers/rabbit.svg'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 import xiangqiCover from '../assets/covers/xiangqi.png'
 import daxiguaCover from '../assets/covers/daxigua.png'
+import feixingqiCover from '../assets/covers/feixingqi.png'
 
 export const works = [
+  {
+    id: 'feixingqi',
+    title: 'AERO LUDO',
+    subtitle: '欢乐飞行棋',
+    type: '对弈',
+    label: '掷骰 / 竞速',
+    dimension: '2D',
+    colors: ['#2f9fe0', '#ffc93c'],
+    cover: feixingqiCover,
+    description: '经典四色飞行棋：摇到 1 或 6 才能起飞，踩到对方棋子把它撞回基地，先把四架飞机送进中央终点区就赢。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的经典飞行棋试玩广告，红、黄、蓝、绿四方各四架飞机，卡通的蓝天棋盘配立体小人飞机。摇到 1 或 6 才能起飞，起飞后绕环道走 50 格再转入归航道，合计 56 步抵达中央终点区。落点会按经典规则结算：踩到自己的飞行道起跳格就沿虚线飞越四分之一圈，落在同色格再往前跳 4 格，踩到对方的单颗棋子则把它撞回起点（叠子撞不动）。支持 1~4 人游玩、其余座位交给电脑，带选子面板、暂停、音效开关与胜负结算。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['飞行棋', '掷骰', '撞子', 'AI 对战'],
+    hasPlayable: true,
+    playableSrc: '/playable/feixingqi.html',
+    iframeTip: '已挂载 · 点骰子摇点，多颗可走时点棋子选它',
+    controls: [
+      '点骰子摇点数，摇到 1 或 6 才能让飞机起飞',
+      '落在自己的飞行道起跳格会直接飞越四分之一圈，同色格再跳 4 格',
+      '踩到对方的单颗棋子会把它撞回起点，四架飞机全部抵达中央终点区即获胜',
+    ],
+  },
   {
     id: 'tetris',
     title: 'TETRIS',

@@ -675,7 +675,7 @@ code {
   width: 100px; height: 18px;
   border-radius: 999px;
   background: rgba(15, 23, 42, .6);
-  z-index: 3;
+  z-index: 4;
 }
 .play-frame.is-landscape .phone-notch {
   top: 50%;
@@ -729,14 +729,132 @@ code {
   font: 700 10.5px 'DM Mono', monospace;
   letter-spacing: .04em;
 }
-.play-iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+.play-iframe { width: 100%; height: 100%; border: 0; display: block; background: #0f172a; }
+
+/* ── 试玩加载遮罩 ──────────────────────────────────────────────
+   点「立即试玩」到引擎真正出画面之间有几秒空窗（下载 + 解 brotli +
+   eval 引擎 + 初始化场景），这段时间 iframe 是纯黑的，干等很慌。
+   这块遮罩把空窗变得"有交代"：封面打底（所以永远不是黑屏）+
+   环形进度 + 真实百分比 + 阶段文案，引擎出画面后自动淡出。
+   z-index 压在刘海(4) 之下、封面角标(3) 之上：刘海和 home 条继续浮在
+   最上面维持手机框的观感，而「9:16 · 竖屏」那个角标会被遮住。 */
+.play-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  overflow: hidden;
+}
+.play-loader-leave-active { transition: opacity .45s ease; }
+.play-loader-leave-to { opacity: 0; }
+
+.play-loader-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  filter: blur(1.5px);
+}
+.play-loader-veil {
+  position: absolute;
+  inset: 0;
+  /* 压暗要够，否则白色进度环和百分比落在明亮封面上会糊掉看不清；
+     但又不能压死，四周留一点封面本色，等待时还看得出是哪个游戏 */
+  background: radial-gradient(120% 76% at 50% 44%,
+    rgba(15, 23, 42, .42) 0%,
+    rgba(15, 23, 42, .66) 56%,
+    rgba(15, 23, 42, .9) 100%);
+}
+
+.play-loader-body {
+  position: relative;
+  width: 96px; height: 96px;
+  display: grid;
+  place-items: center;
+}
+.play-loader-ring { position: absolute; inset: 0; width: 100%; height: 100%; }
+.play-loader-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, .26);
+  stroke-width: 6.5;
+}
+.play-loader-bar {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6.5;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset .2s linear;
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, .7));
+}
+.play-loader-spin {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6.5;
+  stroke-linecap: round;
+  stroke-dasharray: 58 206;
+  transform-origin: 50% 50%;
+  animation: play-loader-turn 1.05s linear infinite;
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, .7));
+}
+@keyframes play-loader-turn {
+  from { transform: rotate(-90deg); }
+  to { transform: rotate(270deg); }
+}
+
+.play-loader-num {
+  position: relative;
+  color: #fff;
+  font: 800 26px/1 'Manrope', sans-serif;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 12px rgba(15, 23, 42, .55);
+}
+.play-loader-num i { font-size: 13px; font-style: normal; margin-left: 1px; opacity: .78; }
+
+.play-loader-dots { position: relative; display: flex; gap: 5px; }
+.play-loader-dots i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  animation: play-loader-bounce 1.15s ease-in-out infinite;
+}
+.play-loader-dots i:nth-child(2) { animation-delay: .16s; }
+.play-loader-dots i:nth-child(3) { animation-delay: .32s; }
+@keyframes play-loader-bounce {
+  0%, 80%, 100% { transform: translateY(1px); opacity: .4; }
+  40% { transform: translateY(-6px); opacity: 1; }
+}
+
+.play-loader-hint {
+  position: relative;
+  padding: 0 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, .94);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-shadow: 0 1px 10px rgba(15, 23, 42, .6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-loader-spin { animation-duration: 2.6s; }
+  .play-loader-dots i { animation-duration: 2.6s; }
+  .play-loader-leave-active { transition-duration: .2s; }
+}
 .phone-home {
   position: absolute; bottom: 6px; left: 50%;
   transform: translateX(-50%);
   width: 80px; height: 3px;
   border-radius: 999px;
   background: rgba(15, 23, 42, .4);
-  z-index: 3;
+  z-index: 4;
 }
 .play-frame.is-landscape .phone-home {
   right: 6px;

@@ -1,12 +1,12 @@
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { works } from '../data/works.js'
 
 const route = useRoute()
 
 // 默认进入页面时选中最新接入的真实试玩
-const activeId = ref('tetris')
+const activeId = ref('feixingqi')
 const active = computed(() => works.find((w) => w.id === activeId.value) || works[0])
 const orientationMode = ref('portrait')
 const iframeRef = ref(null)
@@ -45,24 +45,244 @@ function syncFromQuery() {
     }
   }
 }
-onMounted(syncFromQuery)
+onMounted(() => {
+  syncFromQuery()
+  schedulePrefetch()
+})
 watch(() => route.query.game, syncFromQuery)
 
 // iframe 懒加载：只有点击"立即试玩"才挂载
 const iframeMounted = ref(false)
 const iframeKey = ref(0) // 切换 game 或重新加载时递增
 
-function loadIframe() {
+/* ── 试玩加载遮罩 ──────────────────────────────────────────────
+   试玩包 4~5MB，点「立即试玩」后要下载 → 解 brotli → eval 引擎 →
+   初始化场景，这几秒里 iframe 是一片纯黑，干等很难受。
+
+   做法：先由我们自己 fetch 把整包读一遍（所以百分比是真实的"拿到多少
+   字节"），读完那些字节就进了 HTTP 缓存；然后再挂 iframe 让它用**原路径**
+   加载 —— 此时基本是命中缓存的，几乎瞬时，于是「进度条走完」和
+   「iframe 拿到字节」是同一件事，不会各跑各的。
+
+   为什么不直接把 fetch 的内容做成 blob 喂给 iframe：试过，blob 文档的
+   baseURI 变了，包里的 new URL(相对路径) 会抛 Invalid URL，
+   实测报错。让 iframe 走原路径就没有这个问题。
+   万一服务器禁用了缓存，iframe 会重新下一遍，但遮罩一直盖着，
+   用户看到的依然是封面 + 进度，不会退化成黑屏。
+   ───────────────────────────────────────────────────────────── */
+const RING_LENGTH = 264 // 2πr, r = 42
+const SLOW_HINT_MS = 6000 // 引擎阶段太久 → 换句安抚文案
+const READY_SETTLE_MS = 600 // 探测到引擎后，再等首帧画出来
+const HARD_TIMEOUT_MS = 30000 // 绝对兜底，绝不能一直挡着
+
+const showLoader = ref(false)
+const loadPhase = ref('download') // download | boot
+const loadPercent = ref(0)
+const loadSlow = ref(false)
+
+const loaderHint = computed(() => {
+  if (loadPhase.value === 'download') return '正在加载试玩包'
+  return loadSlow.value ? '引擎首次解压会慢一点，马上就好' : '正在启动游戏引擎'
+})
+
+let loadCtl = null
+let probeTimer = null
+let fakeTimer = null
+let slowTimer = null
+let exitTimer = null
+let prefetchCtl = null
+let prefetchedSrc = '' // 已经预热进 HTTP 缓存的包路径
+
+function stopLoadTimers() {
+  if (probeTimer) { clearInterval(probeTimer); probeTimer = null }
+  if (fakeTimer) { clearInterval(fakeTimer); fakeTimer = null }
+  clearTimeout(slowTimer); slowTimer = null
+  clearTimeout(exitTimer); exitTimer = null
+}
+
+function resetLoader() {
+  stopLoadTimers()
+  if (loadCtl) { loadCtl.abort(); loadCtl = null }
+  showLoader.value = false
+  loadPhase.value = 'download'
+  loadPercent.value = 0
+  loadSlow.value = false
+}
+
+function mountIframe() {
   iframeMounted.value = true
   iframeKey.value++
 }
 
+function finishLoader(delay = 0) {
+  stopLoadTimers()
+  if (loadCtl) { loadCtl.abort(); loadCtl = null }
+  exitTimer = setTimeout(() => { showLoader.value = false }, delay)
+}
+
+// 同源轮询：判断 Cocos 是否真的把画面跑起来了
+function isEngineReady() {
+  const frame = iframeRef.value
+  if (!frame) return false
+  try {
+    const win = frame.contentWindow
+    const doc = win && win.document
+    if (!doc || !doc.body) return false
+
+    // 最强信号：引擎进入渲染循环（场景已挂载且已有帧）
+    const cc = win.cc
+    if (cc && cc.director) {
+      const d = cc.director
+      if (typeof d.getTotalFrames === 'function' && d.getTotalFrames() > 1) return true
+      if (typeof d.getScene === 'function' && d.getScene()) return true
+    }
+
+    // 兜底信号：引擎把 GameCanvas 从默认 300×150 改写成设计分辨率
+    const canvas = doc.getElementById('GameCanvas') || doc.querySelector('canvas')
+    if (canvas && canvas.width > 0 && canvas.height > 0
+        && (canvas.width !== 300 || canvas.height !== 150)) return true
+  } catch (err) {
+    return false // 探测不到就交给超时兜底
+  }
+  return false
+}
+
+// 把整包读一遍并报进度。读完即弃 —— 目的不是把数据留下，
+// 而是让这些字节进 HTTP 缓存，紧接着挂载的 iframe 就能直接命中，
+// 于是「进度条走完」和「iframe 拿到字节」是同一件事。
+async function warmUpSource(src, signal, onProgress) {
+  const res = await fetch(src, { signal })
+  if (!res.ok || !res.body) throw new Error('HTTP ' + res.status)
+  const total = Number(res.headers.get('content-length') || 0)
+  const reader = res.body.getReader()
+  let received = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    received += value.byteLength
+    if (total) onProgress(received / total)
+  }
+}
+
+function startProbe() {
+  nextTick(() => {
+    if (!showLoader.value) return
+    const startedAt = Date.now()
+    probeTimer = setInterval(() => {
+      if (isEngineReady()) { finishLoader(READY_SETTLE_MS); return }
+      if (Date.now() - startedAt > HARD_TIMEOUT_MS) finishLoader(0)
+    }, 180)
+  })
+}
+
+// 进入「引擎启动」阶段：进度条交给无限旋转圈，并开始计"慢"的安抚文案。
+// 放在这里而不是用 setTimeout 从点击算，是为了让"慢"只针对引擎阶段 ——
+// 下载慢的时候百分比本身就在动，用户不缺反馈，不该换文案。
+function enterBootPhase() {
+  loadPercent.value = 100
+  loadPhase.value = 'boot'
+  clearTimeout(slowTimer)
+  slowTimer = setTimeout(() => { loadSlow.value = true }, SLOW_HINT_MS)
+}
+
+function startPlayable(src) {
+  resetLoader()
+  showLoader.value = true
+  loadPhase.value = 'download'
+  loadPercent.value = 0
+
+  // 预取已经把字节放进缓存了 → 下载阶段直接跳过，立刻挂 iframe
+  if (prefetchedSrc === src) {
+    if (prefetchCtl) { prefetchCtl.abort(); prefetchCtl = null }
+    enterBootPhase()
+    mountIframe()
+    startProbe()
+    return
+  }
+
+  // 正式加载优先：掐掉还在跑的预取，把带宽让出来
+  if (prefetchCtl) { prefetchCtl.abort(); prefetchCtl = null }
+
+  const ctl = new AbortController()
+  loadCtl = ctl
+
+  // 拿不到 content-length 时的缓动假进度，保证始终有反馈
+  fakeTimer = setInterval(() => {
+    if (loadPercent.value < 92) {
+      loadPercent.value = Math.min(92, loadPercent.value + Math.max(0.5, (92 - loadPercent.value) * 0.05))
+    }
+  }, 140)
+
+  const proceed = () => {
+    if (ctl.signal.aborted) return
+    if (fakeTimer) { clearInterval(fakeTimer); fakeTimer = null }
+    loadCtl = null
+    enterBootPhase()
+    mountIframe() // 字节已经在缓存里，这一步几乎是瞬时的
+    startProbe()
+  }
+
+  // 预热失败也照常往下走 —— 那就让 iframe 自己去下载，遮罩继续盖着
+  warmUpSource(src, ctl.signal, (ratio) => {
+    if (fakeTimer) { clearInterval(fakeTimer); fakeTimer = null }
+    loadPercent.value = Math.min(99, ratio * 100)
+  }).then(proceed, proceed)
+}
+
+function loadIframe() {
+  const src = active.value?.playableSrc
+  if (!src) return
+  startPlayable(src)
+}
+
 function reloadIframe() {
-  iframeKey.value++
+  const src = active.value?.playableSrc
+  if (!src) return
+  startPlayable(src)
+}
+
+/* ── 空闲预取：停在试玩页时就把包先读进 HTTP 缓存，
+   点「立即试玩」时连下载阶段都省了，直接进引擎启动。
+   边下边看体积，超过 8MB 立刻放弃（rabbit.html 有 40MB，不能白下）。 */
+const PREFETCH_LIMIT = 8 * 1024 * 1024
+
+function schedulePrefetch() {
+  if (prefetchCtl) { prefetchCtl.abort(); prefetchCtl = null }
+  prefetchedSrc = ''
+  const src = active.value?.playableSrc
+  if (!src || typeof fetch !== 'function') return
+
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500))
+  idle(() => {
+    if (iframeMounted.value) return // 已经在正式加载了，别重复拉
+    const ctl = new AbortController()
+    prefetchCtl = ctl
+    runPrefetch(src, ctl)
+  }, { timeout: 4000 })
+}
+
+async function runPrefetch(src, ctl) {
+  try {
+    const res = await fetch(src, { signal: ctl.signal, priority: 'low' })
+    if (!res.ok || !res.body) return
+    const reader = res.body.getReader()
+    let seen = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      seen += value.byteLength
+      if (seen > PREFETCH_LIMIT) { ctl.abort(); return }
+    }
+    if (ctl.signal.aborted) return
+    prefetchedSrc = src // 读完 → 字节已进缓存，等待被 startPlayable 认领
+  } catch (err) {
+    // 预取失败无所谓，正式加载照常走网络
+  }
 }
 
 // 切换到其他 game
 function selectGame(game) {
+  resetLoader()
   activeId.value = game.id
   // 切到设计稿游戏时不要显示旧 iframe
   iframeMounted.value = false
@@ -71,11 +291,18 @@ function selectGame(game) {
 
 // 切换 game 时把页面滚回顶部（用户可能在底部列表点击）
 watch(activeId, () => {
+  resetLoader()
   resetOrientationForActive()
   nextTick(() => {
     const stage = document.querySelector('.play-stage')
     if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' })
   })
+  schedulePrefetch()
+})
+
+onUnmounted(() => {
+  resetLoader()
+  if (prefetchCtl) { prefetchCtl.abort(); prefetchCtl = null }
 })
 
 const games = computed(() => works)
@@ -135,6 +362,34 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
               scrolling="no"
               :title="`${active.title} 试玩广告`"
             ></iframe>
+
+            <!-- 加载遮罩：盖住引擎初始化期间的黑屏，封面打底所以永远不是纯黑 -->
+            <transition name="play-loader">
+              <div v-if="showLoader" class="play-loader">
+                <img class="play-loader-bg" :src="active.cover" alt="" aria-hidden="true" />
+                <div class="play-loader-veil" aria-hidden="true"></div>
+                <div class="play-loader-body">
+                  <svg class="play-loader-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle class="play-loader-track" cx="50" cy="50" r="42" />
+                    <circle
+                      v-if="loadPhase === 'download'"
+                      class="play-loader-bar"
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      :stroke-dasharray="RING_LENGTH"
+                      :stroke-dashoffset="RING_LENGTH * (1 - loadPercent / 100)"
+                    />
+                    <circle v-else class="play-loader-spin" cx="50" cy="50" r="42" />
+                  </svg>
+                  <span v-if="loadPhase === 'download'" class="play-loader-num">
+                    {{ Math.round(loadPercent) }}<i>%</i>
+                  </span>
+                  <span v-else class="play-loader-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                </div>
+                <p class="play-loader-hint">{{ loaderHint }}</p>
+              </div>
+            </transition>
           </div>
           <div class="phone-home" aria-hidden="true"></div>
         </div>
