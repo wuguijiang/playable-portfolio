@@ -1,4 +1,4 @@
-// 共享数据：试玩广告作品（含 5 个真实可玩的游戏 + 6 个设计稿）
+// 共享数据：试玩广告作品（真实可玩的 + 设计稿）
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
@@ -15,8 +15,56 @@ import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 import xiangqiCover from '../assets/covers/xiangqi.png'
 import daxiguaCover from '../assets/covers/daxigua.png'
 import feixingqiCover from '../assets/covers/feixingqi.png'
+import gobangCover from '../assets/covers/gobang.png'
+import cover2048 from '../assets/covers/2048.png'
 
 export const works = [
+  {
+    id: '2048',
+    title: '2048',
+    subtitle: '合成 2048',
+    type: '合成',
+    label: '滑动 / 合并',
+    dimension: '2D',
+    colors: ['#7fb3d5', '#f5a9a2'],
+    cover: cover2048,
+    description: '经典 2048：上下左右滑动，两个相同数字碰到一起就合并成它们的和，一路从 2 合到 2048。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的 2048 试玩广告。4×4 棋盘，上下左右滑动（桌面端也支持键盘方向键）让所有方块朝同一方向移动，两个相同数字相撞会合并成它们的和并累加分数；每走一步棋盘空位会随机生成一个新的 2 或 4，全部塞满且无法再合并时本局结束，目标是合出 2048。整体是柔和的马卡龙配色，方块有圆润的立体质感，出现与合并都带缓动动画，滑动、合并、达成 2048 各有对应音效，最高分会自动存到本地。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['2048', '合成', '滑动操作', '分数挑战'],
+    hasPlayable: true,
+    playableSrc: '/playable/2048.html',
+    iframeTip: '已挂载 · 上下左右滑动或用方向键合并数字',
+    controls: [
+      '上下左右滑动（桌面端可直接用方向键）让所有方块朝该方向移动',
+      '两个相同数字碰到一起会合并成它们的和，同时累加分数',
+      '目标是合出 2048；棋盘塞满且无法再合并时本局结束',
+    ],
+  },
+  {
+    id: 'gobang',
+    title: 'GOMOKU',
+    subtitle: '欢乐五子棋',
+    type: '对弈',
+    label: '点击 / 落子',
+    dimension: '2D',
+    colors: ['#e9a33a', '#6bb26b'],
+    cover: gobangCover,
+    description: '15×15 标准棋盘，黑白轮流落子，横竖斜先连成五子者胜。支持人机对战和同一台设备上的双人对弈。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的五子棋试玩广告，15×15 标准棋盘，黑白双方轮流落子，横、竖、斜任意方向先连成五子即获胜。支持人机对战与同一台设备上的双人对弈两种模式：电脑方是带攻防评估的 AI —— 自己有机会直接成五就立刻赢下，发现对手即将成五则必定去堵，再按活三、活四这些棋型的分值挑落点，配合思考延迟，下起来更像在跟真人过招。棋盘是明快的暖黄木纹配卡通草地背景，落子与胜负都有对应的音效反馈。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['五子棋', '人机对战', '双人对弈', 'AI 攻防'],
+    hasPlayable: true,
+    playableSrc: '/playable/gobang.html',
+    iframeTip: '已挂载 · 点棋盘交叉点落子，连成五子即胜',
+    controls: [
+      '点击棋盘交叉点落子，黑棋先行',
+      '横、竖、斜任意方向连成五颗同色棋子即获胜',
+      '人机模式的 AI 会优先直接取胜，其次堵你的进攻',
+    ],
+  },
   {
     id: 'feixingqi',
     title: 'AERO LUDO',

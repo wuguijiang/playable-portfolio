@@ -6,7 +6,7 @@ import { works } from '../data/works.js'
 const route = useRoute()
 
 // 默认进入页面时选中最新接入的真实试玩
-const activeId = ref('feixingqi')
+const activeId = ref('2048')
 const active = computed(() => works.find((w) => w.id === activeId.value) || works[0])
 const orientationMode = ref('portrait')
 const iframeRef = ref(null)
