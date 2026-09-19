@@ -2,7 +2,7 @@
 // Home.vue / Works.vue / Play.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
-import tetrisCover from '../assets/covers/tetris.svg'
+import tetrisCover from '../assets/covers/tetris.jpg'
 import beachToastCover from '../assets/covers/beach-toast.png'
 import sushiSortCover from '../assets/covers/sushi-sort.png'
 import tidyTownCover from '../assets/covers/tidy-town.png'
