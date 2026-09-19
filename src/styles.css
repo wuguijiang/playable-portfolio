@@ -867,7 +867,8 @@ code {
 .play-frame-actions { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .play-frame-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .play-reload,
-.play-orientation {
+.play-orientation,
+.play-fullscreen {
   padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -878,6 +879,12 @@ code {
   cursor: pointer;
   transition: all .2s;
 }
+.play-fullscreen:hover { border-color: var(--ink); color: var(--ink); }
+.play-fullscreen[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
 .play-reload:hover { border-color: var(--ink); color: var(--ink); }
 .play-orientation {
   border-color: var(--ink);
@@ -886,6 +893,138 @@ code {
 }
 .play-orientation:hover { border-color: var(--primary); background: var(--primary); transform: translateY(-1px); }
 .play-frame-tip { flex: 1; min-width: 130px; color: var(--muted); font: 500 11px 'DM Mono', monospace; letter-spacing: .04em; line-height: 1.5; text-align: right; }
+
+/* ── 全屏试玩 ──────────────────────────────────────────────────
+   全屏不复制 DOM，而是把**同一个** .phone-frame 提成 fixed 居中放大
+   —— 复制会造出一个新 iframe，游戏得从头重新加载，进度全丢。
+   下面这层遮罩负责接住「点手机框以外」的点击；它和手机框不是父子，
+   所以点手机框本身不会冒泡上来。 */
+.play-fullscreen-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  /* ⚠️ 这里**故意不用** backdrop-filter: blur()。
+     它要求浏览器每一帧都对"这个元素背后的内容"重新做一次高斯模糊，
+     而背后正好是一整块持续重绘的 WebGL canvas（还铺满整个视口面积），
+     实测会让全屏后掉帧掉得很明显。
+     用足够深的纯色遮罩同样能把注意力收到游戏上，渲染成本几乎为零。 */
+  background: rgba(6, 10, 18, .9);
+  animation: play-fs-fade .22s ease;
+  cursor: zoom-out;
+}
+@keyframes play-fs-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.play-fullscreen-hint {
+  position: absolute;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, .6);
+  font: 500 12.5px 'DM Mono', monospace;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.phone-frame.is-fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 201;
+  transform: translate(-50%, -50%);
+  /* 宽度取「视口宽」与「88vh 按 9:16 换算回来」的较小值，
+     高度交给 aspect-ratio 自己算，这样横竖都不会溢出屏幕 */
+  width: min(94vw, calc(88vh * 9 / 16));
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 34px;
+  /* 全屏时去掉那圈 60px 模糊的外阴影：它铺开的面积极大，而这个元素的
+     内容（canvas）每一帧都在变，留着等于白白多付合成开销。
+     遮罩本来就很深，阴影也看不出来，换成 1px 描边足够。 */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .07);
+  animation: play-fs-pop .26s cubic-bezier(.22, 1, .36, 1);
+}
+@keyframes play-fs-pop {
+  from { opacity: .5; transform: translate(-50%, -50%) scale(.93); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* 本来就支持横屏的游戏，全屏时按 16:9 铺开 */
+.play-frame.is-landscape .phone-frame.is-fullscreen {
+  width: min(94vw, calc(88vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  border-radius: 28px;
+}
+
+@media (max-width: 640px) {
+  .phone-frame.is-fullscreen {
+    width: min(96vw, calc(84vh * 9 / 16));
+    border-radius: 26px;
+    padding: 8px;
+  }
+  .play-frame.is-landscape .phone-frame.is-fullscreen {
+    width: min(96vw, calc(84vh * 16 / 9));
+  }
+  .play-fullscreen-hint { font-size: 11.5px; }
+}
+
+/* ── 「回到试玩」浮动按钮 ──────────────────────────────────────
+   往下滚去看文案或「其他试玩」之后，用滚轮想滚回那个竖屏框很容易
+   一滑就过头。点这个按钮就把手机框滚到视口正中。
+   注意它固定在**视口**右侧，而不是手机框右边 —— 挂框右边的话，
+   等滚过头按钮自己也跟着滚没了，等于白加。
+   只在手机框没完整露出来时才出现，平时不碍事。 */
+.play-scroll-cue {
+  position: fixed;
+  top: 50%;
+  right: 22px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 700 12.5px 'DM Mono', monospace;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 10px 26px -14px rgba(15, 23, 42, .45);
+  transition: color .2s, border-color .2s, box-shadow .2s;
+  animation: play-cue-in .26s cubic-bezier(.22, 1, .36, 1);
+}
+.play-scroll-cue:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 12px 30px -14px rgba(22, 119, 255, .5);
+}
+.play-scroll-cue svg {
+  width: 16px; height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@keyframes play-cue-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(12px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* 窄屏只留图标，免得挡住正文 */
+@media (max-width: 900px) {
+  .play-scroll-cue { right: 14px; padding: 11px; }
+  .play-scroll-cue span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-fullscreen-backdrop,
+  .phone-frame.is-fullscreen,
+  .play-scroll-cue { animation: none; }
+}
 
 .play-info { padding-top: 4px; }
 .play-info h2 { margin-top: 12px; font-size: clamp(30px, 3.2vw, 42px); font-weight: 900; letter-spacing: -.04em; }

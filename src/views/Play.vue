@@ -6,7 +6,7 @@ import { works } from '../data/works.js'
 const route = useRoute()
 
 // 默认进入页面时选中最新接入的真实试玩
-const activeId = ref('2048')
+const activeId = ref('meow-meow')
 const active = computed(() => works.find((w) => w.id === activeId.value) || works[0])
 const orientationMode = ref('portrait')
 const iframeRef = ref(null)
@@ -33,6 +33,66 @@ function toggleOrientation() {
   notifyIframeResize()
 }
 
+/* ── 全屏试玩 ──────────────────────────────────────────────────
+   全屏是把**同一个** .phone-frame 提成 fixed 居中放大，而不是复制一份
+   —— 复制出来就是一个新的 iframe，游戏会从头重新加载，进度全丢。
+   退出方式：点手机框以外的区域，或者按 Esc。 */
+const isFullscreen = ref(false)
+
+function openFullscreen() {
+  isFullscreen.value = true
+  document.body.style.overflow = 'hidden' // 全屏时别让页面跟着滚
+}
+
+function closeFullscreen() {
+  if (!isFullscreen.value) return
+  isFullscreen.value = false
+  document.body.style.overflow = ''
+}
+
+function toggleFullscreen() {
+  if (isFullscreen.value) closeFullscreen()
+  else openFullscreen()
+}
+
+function onFullscreenKey(e) {
+  if (e.key === 'Escape') closeFullscreen()
+}
+
+/* ── 「回到试玩」浮动按钮 ────────────────────────────────────────
+   往下滚去看文案或「其他试玩」之后，想把那个竖屏框滚回正中，用滚轮
+   经常一滑就过头。这个按钮固定挂在**视口右侧**而不是手机框右边 ——
+   挂在框右边的话，等滚过头它自己也跟着滚没了，等于白加。
+   只在手机框没有完整露出来时才浮现，平时不碍事。 */
+const showScrollCue = ref(false)
+let cueRaf = 0
+
+function scrollToPlayer() {
+  const frame = document.querySelector('.play-frame')
+  if (!frame) return
+  const rect = frame.getBoundingClientRect()
+  const top = rect.top + window.scrollY
+  const vh = window.innerHeight
+  const target = rect.height > vh - 48
+    ? top - 16                        // 框比视口还高 → 顶到上边就够了
+    : top - (vh - rect.height) / 2    // 否则让它垂直居中
+  window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' })
+}
+
+// 滚动/改变视口时判断手机框露没露全，露全了就收起按钮。
+// 用 rAF 节流，别让 scroll 事件把主线程刷爆。
+function updateScrollCue() {
+  if (cueRaf) return
+  cueRaf = requestAnimationFrame(() => {
+    cueRaf = 0
+    const frame = document.querySelector('.play-frame')
+    if (!frame) { showScrollCue.value = false; return }
+    const rect = frame.getBoundingClientRect()
+    const vh = window.innerHeight
+    showScrollCue.value = !(rect.top >= -4 && rect.bottom <= vh + 4)
+  })
+}
+
 // 从 URL 读 ?game= 自动选中（比如从作品页点过来）
 function syncFromQuery() {
   const idx = Number(route.query.game)
@@ -48,6 +108,10 @@ function syncFromQuery() {
 onMounted(() => {
   syncFromQuery()
   schedulePrefetch()
+  window.addEventListener('keydown', onFullscreenKey)
+  window.addEventListener('scroll', updateScrollCue, { passive: true })
+  window.addEventListener('resize', updateScrollCue)
+  updateScrollCue()
 })
 watch(() => route.query.game, syncFromQuery)
 
@@ -292,6 +356,7 @@ function selectGame(game) {
 // 切换 game 时把页面滚回顶部（用户可能在底部列表点击）
 watch(activeId, () => {
   resetLoader()
+  closeFullscreen() // 换游戏就退出全屏，免得放大着切到别的游戏
   resetOrientationForActive()
   nextTick(() => {
     const stage = document.querySelector('.play-stage')
@@ -303,6 +368,11 @@ watch(activeId, () => {
 onUnmounted(() => {
   resetLoader()
   if (prefetchCtl) { prefetchCtl.abort(); prefetchCtl = null }
+  window.removeEventListener('keydown', onFullscreenKey)
+  window.removeEventListener('scroll', updateScrollCue)
+  window.removeEventListener('resize', updateScrollCue)
+  if (cueRaf) { cancelAnimationFrame(cueRaf); cueRaf = 0 }
+  document.body.style.overflow = '' // 别把整页滚动锁死在外面
 })
 
 const games = computed(() => works)
@@ -329,7 +399,7 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
         :class="{ 'is-landscape': isLandscape }"
         :style="{ '--primary': active.colors[0], '--secondary': active.colors[1] }"
       >
-        <div class="phone-frame">
+        <div class="phone-frame" :class="{ 'is-fullscreen': isFullscreen }">
           <div class="phone-notch" aria-hidden="true"></div>
           <div class="phone-screen">
             <!-- 未挂载时显示封面 + 开始按钮 -->
@@ -407,6 +477,13 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
               class="play-reload"
               @click="reloadIframe"
             >↻ 重新加载</button>
+            <button
+              v-if="iframeMounted && active.playableSrc"
+              type="button"
+              class="play-fullscreen"
+              :aria-pressed="isFullscreen"
+              @click="toggleFullscreen"
+            >{{ isFullscreen ? '✕ 退出全屏' : '⛶ 全屏' }}</button>
           </div>
           <span class="play-frame-tip">
             {{ active.hasPlayable ? active.iframeTip : '点击其他游戏即可切换' }}
@@ -487,5 +564,28 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
         </button>
       </div>
     </section>
+    <!-- 「回到试玩」浮动按钮：固定在视口右侧，滚到哪儿都点得到 -->
+    <button
+      v-if="showScrollCue && !isFullscreen"
+      type="button"
+      class="play-scroll-cue"
+      title="把试玩屏幕滚到视口正中"
+      @click="scrollToPlayer"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="6.5" y="2.5" width="11" height="19" rx="3" />
+        <path d="M12 8.6v6" />
+        <path d="M9.6 12.3 12 14.7l2.4-2.4" />
+      </svg>
+      <span>回到试玩</span>
+    </button>
+
+    <!-- 全屏时的「点空白处退出」层。它和手机框不是父子关系，
+         所以点手机框本身不会冒泡到这里，只有点外面才退出。 -->
+    <Teleport to="body">
+      <div v-if="isFullscreen" class="play-fullscreen-backdrop" @click="closeFullscreen">
+        <span class="play-fullscreen-hint">点击空白处退出全屏 · 或按 Esc</span>
+      </div>
+    </Teleport>
   </main>
 </template>

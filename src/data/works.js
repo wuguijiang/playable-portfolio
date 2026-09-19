@@ -17,8 +17,32 @@ import daxiguaCover from '../assets/covers/daxigua.png'
 import feixingqiCover from '../assets/covers/feixingqi.png'
 import gobangCover from '../assets/covers/gobang.png'
 import cover2048 from '../assets/covers/2048.png'
+import meowMeowCover from '../assets/covers/meow-meow.png'
 
 export const works = [
+  {
+    id: 'meow-meow',
+    title: 'MEOW TRIPLE',
+    subtitle: '猫了个猫',
+    type: '消除',
+    label: '点击 / 三消',
+    dimension: '2D',
+    colors: ['#f79ab5', '#ffd9a8'],
+    cover: meowMeowCover,
+    description: '仿「羊了个羊」的堆叠三消：点卡片收进底部槽位，凑齐三张同款自动消除，槽位塞满就挑战失败。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的堆叠三消试玩广告，玩法脱胎于「羊了个羊」。牌堆由多层卡片交叉叠成，只有没被上层压住的才能点，被遮挡的卡片会明显压暗；点中的卡片飞进底部槽位栏，槽位里凑齐三张相同卡片就自动消除并腾出位置。槽位只有 7 格，塞满且凑不出新的一组三张时就失败。关卡模式按固定布局发牌，清空牌堆即通关并可进入下一关；另外还有牌堆持续向上推进、底部不断补新牌的无尽模式，以已消除张数计分。整体是粉嫩的猫咪主题，配三消、失败等音效反馈。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['三消', '堆叠消除', '关卡闯关', '无尽模式'],
+    hasPlayable: true,
+    playableSrc: '/playable/meow-meow.html',
+    iframeTip: '已挂载 · 点没被压住的卡片，三张同款自动消除',
+    controls: [
+      '点击没有被上层压住的卡片，把它收进底部槽位栏',
+      '槽位里凑齐三张相同卡片会立即消除；槽位塞满 7 格就失败',
+      '关卡模式清空牌堆即通关，无尽模式牌堆会不断补充新牌',
+    ],
+  },
   {
     id: '2048',
     title: '2048',
