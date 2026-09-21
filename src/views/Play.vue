@@ -5,19 +5,30 @@ import { works } from '../data/works.js'
 
 const route = useRoute()
 
-// 默认进入页面时选中最新接入的真实试玩
+// 默认进入页面时选中猫了个猫（用户指定，2026-09-22）
 const activeId = ref('meow-meow')
 const active = computed(() => works.find((w) => w.id === activeId.value) || works[0])
 const orientationMode = ref('portrait')
 const iframeRef = ref(null)
 const supportsOrientationSwitch = computed(() => Boolean(active.value.orientationSwitch))
-const isLandscape = computed(() => supportsOrientationSwitch.value && orientationMode.value === 'landscape')
+// 横屏专属作品（orientation: 'landscape'）：只有横屏一种形态，手机框直接横置
+const isLandscapeOnly = computed(() => active.value.orientation === 'landscape')
+const isLandscape = computed(() => isLandscapeOnly.value
+  || (supportsOrientationSwitch.value && orientationMode.value === 'landscape'))
 const aspectLabel = computed(() => (isLandscape.value ? '16:9 · 横屏' : '9:16 · 竖屏'))
 const orientationButtonLabel = computed(() => (isLandscape.value ? '切到竖屏' : '切到横屏'))
 
 function resetOrientationForActive() {
   orientationMode.value = active.value.orientationSwitch?.defaultMode || 'portrait'
 }
+
+// 试玩框方向说明：可切换的用作品自带 hint；横屏专属的固定提示一句
+const orientationNote = computed(() => {
+  if (supportsOrientationSwitch.value) return active.value.orientationSwitch?.hint
+  if (isLandscapeOnly.value) return '本作为横屏作品，试玩框已自动横置成 16:9，点「立即试玩」直接开玩。'
+  return ''
+})
+const showOrientationNote = computed(() => supportsOrientationSwitch.value || isLandscapeOnly.value)
 
 function notifyIframeResize() {
   nextTick(() => {
@@ -386,8 +397,9 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span> PLAY / TRY NOW</p>
       <h1>亲自动手，<em>体验一下</em>。</h1>
       <p class="play-hero-intro">
-        下面是我用 Cocos Creator 真实打包的试玩广告，默认 9:16，可直接玩。
-        支持横竖屏的游戏会显示方向切换按钮。
+        下面是我用 Cocos Creator 真实打包的试玩广告：竖屏作品默认 9:16，
+        横屏作品会把手机框自动横成 16:9，点开就能玩。
+        支持横竖屏切换的游戏会显示方向按钮。
         加载需要几秒，耐心等一下。
       </p>
     </section>
@@ -510,9 +522,9 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
           <span v-for="tag in active.tags" :key="tag">{{ tag }}</span>
         </div>
 
-        <div v-if="supportsOrientationSwitch" class="play-orientation-note">
-          <b>横竖屏切换</b>
-          <p>{{ active.orientationSwitch.hint }}</p>
+        <div v-if="showOrientationNote" class="play-orientation-note">
+          <b>{{ isLandscapeOnly ? '横屏试玩' : '横竖屏切换' }}</b>
+          <p>{{ orientationNote }}</p>
         </div>
 
         <div v-if="active.controls" class="play-control-tips">

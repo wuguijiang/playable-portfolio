@@ -10,7 +10,7 @@ import gemGardenCover from '../assets/covers/gem-garden.png'
 import stackRushCover from '../assets/covers/stack-rush.png'
 import candyPourCover from '../assets/covers/candy-pour.png'
 import puppyPathCover from '../assets/covers/puppy-path.png'
-import rabbitCover from '../assets/covers/rabbit.svg'
+import rabbitCover from '../assets/covers/rabbit.png'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 import xiangqiCover from '../assets/covers/xiangqi.png'
 import daxiguaCover from '../assets/covers/daxigua.png'
@@ -18,6 +18,7 @@ import feixingqiCover from '../assets/covers/feixingqi.png'
 import gobangCover from '../assets/covers/gobang.png'
 import cover2048 from '../assets/covers/2048.png'
 import meowMeowCover from '../assets/covers/meow-meow.png'
+import civilizationsWarCover from '../assets/covers/civilizations-war.png'
 
 export const works = [
   {
@@ -41,6 +42,30 @@ export const works = [
       '点击没有被上层压住的卡片，把它收进底部槽位栏',
       '槽位里凑齐三张相同卡片会立即消除；槽位塞满 7 格就失败',
       '关卡模式清空牌堆即通关，无尽模式牌堆会不断补充新牌',
+    ],
+  },
+  {
+    id: 'civilizations-war',
+    title: 'CIVILIZATIONS',
+    subtitle: '远古文明战争',
+    type: '策略',
+    label: '拖拽 / 出兵',
+    dimension: '2D',
+    orientation: 'landscape', // 横屏作品：Play 页手机框自动横置 16:9
+    colors: ['#6b9e56', '#bf5b45'],
+    cover: civilizationsWarCover,
+    description: '拖拽出兵的横版攻防策略：城镇自动产兵，抢占荒废据点，一步步把敌方阵营连根拔起。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的横屏策略攻防试玩广告，设计分辨率 1280×720（16:9），仅支持横屏。地图上分布着城镇、马厩、要塞三种据点：城镇是唯一持续增长人口的兵源，从马厩开拔的部队骑马行军、速度大幅提升，要塞驻守时防御翻倍、由此出兵攻击也翻倍。按住己方据点拖向目标，就会派出半数驻军踏上征途，两军相遇按兵力对拼，攻方杀光守军才能拿下据点；中立据点则要凑够占领人数才能收入囊中。水晶随时间恢复，可施放火球术、战鼓、暴风雪三种法术扭转战局，随关卡推进逐步解锁。敌方 AI 会定时评估战局、主动多路出兵，越往后越凶。平原、沙漠、雪原三关难度递进，雪原一局要被三面包围。把敌方据点全部拔掉即获胜，己方据点清零则落败。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['策略攻防', '拖拽出兵', '据点争夺', '法术技能'],
+    hasPlayable: true,
+    playableSrc: '/playable/civilizations-war.html',
+    iframeTip: '已挂载 · 按住己方据点拖向目标即可出兵',
+    controls: [
+      '按住己方据点拖到目标据点，派出半数驻军发起进攻',
+      '城镇产兵、马厩提速、要塞攻防翻倍，优先抢下荒废城池',
+      '用水晶施放火球术 / 战鼓 / 暴风雪，拔光敌方据点即获胜',
     ],
   },
   {
