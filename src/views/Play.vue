@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { works } from '../data/works.js'
+import { gameGroups, works } from '../data/works.js'
 
 const route = useRoute()
 
@@ -359,7 +359,7 @@ async function runPrefetch(src, ctl) {
 function selectGame(game) {
   resetLoader()
   activeId.value = game.id
-  // 切到设计稿游戏时不要显示旧 iframe
+  // 切换游戏时不要显示旧 iframe
   iframeMounted.value = false
   iframeKey.value++
 }
@@ -387,7 +387,17 @@ onUnmounted(() => {
 })
 
 const games = computed(() => works)
-const playableGames = computed(() => works.filter((g) => g.hasPlayable))
+
+/* ── 游戏分组 ──────────────────────────────────────────────
+   作品分两类：「试玩」= 广告向的试玩作品，「小游戏」= 完整小游戏。 */
+const activeGroup = ref('全部')
+const filteredGames = computed(() => (
+  activeGroup.value === '全部' ? works : works.filter((g) => g.group === activeGroup.value)
+))
+function groupCount(group) {
+  return group === '全部' ? works.length : works.filter((g) => g.group === group).length
+}
+
 </script>
 
 <template>
@@ -397,7 +407,7 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span> PLAY / TRY NOW</p>
       <h1>亲自动手，<em>体验一下</em>。</h1>
       <p class="play-hero-intro">
-        下面是我用 Cocos Creator 真实打包的试玩广告：竖屏作品默认 9:16，
+        下面是我用 Cocos Creator 真实打包的小游戏与试玩广告：竖屏作品默认 9:16，
         横屏作品会把手机框自动横成 16:9，点开就能玩。
         支持横竖屏切换的游戏会显示方向按钮。
         加载需要几秒，耐心等一下。
@@ -419,7 +429,6 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
               <img :src="active.cover" :alt="`${active.subtitle}游戏封面`" />
               <div class="play-cover-overlay">
                 <button
-                  v-if="active.playableSrc"
                   type="button"
                   class="play-start"
                   @click="loadIframe"
@@ -427,7 +436,6 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
                   <span class="play-icon" aria-hidden="true">▶</span>
                   <span>立即试玩</span>
                 </button>
-                <span v-else class="play-soon">设计稿 · 暂未打包</span>
               </div>
               <span class="play-cover-tag">{{ aspectLabel }} · {{ active.dimension }}</span>
             </div>
@@ -498,7 +506,7 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
             >{{ isFullscreen ? '✕ 退出全屏' : '⛶ 全屏' }}</button>
           </div>
           <span class="play-frame-tip">
-            {{ active.hasPlayable ? active.iframeTip : '点击其他游戏即可切换' }}
+            {{ active.iframeTip }}
           </span>
         </div>
       </div>
@@ -540,10 +548,11 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
     <section class="more-games shell">
       <header class="more-games-head">
         <div>
-          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> MORE PLAYABLES</p>
-          <h2>其他试玩</h2>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> GAME LIBRARY</p>
+          <h2>全部游戏</h2>
           <p class="section-note">
-            点击切换当前试玩。<b>{{ playableGames.length }}</b> 个可玩 · <b>{{ games.length - playableGames.length }}</b> 个正在设计。
+            点击切换当前游戏，共 <b>{{ games.length }}</b> 个可直接上手：
+            小游戏 <b>{{ groupCount('小游戏') }}</b> 个 · 试玩 <b>{{ groupCount('试玩') }}</b> 个。
           </p>
         </div>
         <router-link to="/tools" class="more-games-link">
@@ -552,9 +561,21 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
         </router-link>
       </header>
 
+      <div class="filters more-games-filter" role="group" aria-label="游戏分组">
+        <button
+          v-for="group in gameGroups"
+          :key="group"
+          type="button"
+          :class="{ active: activeGroup === group }"
+          @click="activeGroup = group"
+        >
+          {{ group }} <span class="filter-count">{{ groupCount(group) }}</span>
+        </button>
+      </div>
+
       <div class="more-games-grid">
         <button
-          v-for="game in games"
+          v-for="game in filteredGames"
           :key="game.id"
           type="button"
           class="more-game-card"
@@ -564,8 +585,7 @@ const playableGames = computed(() => works.filter((g) => g.hasPlayable))
         >
           <div class="more-game-art">
             <img :src="game.cover" :alt="`${game.subtitle}游戏封面`" />
-            <span v-if="game.hasPlayable" class="more-game-badge playable">PLAYABLE</span>
-            <span v-else class="more-game-badge soon">设计中</span>
+            <span class="more-game-badge" :class="game.group === '试玩' ? 'playable' : 'mini'">{{ game.group }}</span>
             <span v-if="game.id === activeId" class="more-game-now">正在玩</span>
           </div>
           <div class="more-game-info">

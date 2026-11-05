@@ -336,10 +336,10 @@ function skillPercent(level) {
         <div>
           <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 04 / WORKS</p>
           <h2>Cocos 试玩广告精选</h2>
-          <p class="section-note">这里先放 4 个代表作，直接进入试玩中心体验。</p>
+          <p class="section-note">这里先放 4 个代表作，直接进入游戏中心体验。</p>
         </div>
         <router-link to="/play" class="works-all-link">
-          进入试玩中心
+          进入游戏中心
           <span aria-hidden="true">→</span>
         </router-link>
       </header>
@@ -386,7 +386,7 @@ function skillPercent(level) {
           <p class="eyebrow"><span class="dot" aria-hidden="true"></span> {{ ctaPlayable.title }} · COCOS PLAYABLE</p>
           <h3>{{ ctaPlayable.subtitle }}</h3>
           <p>{{ ctaPlayable.description }}</p>
-          <span class="playable-cta-go">点击进入试玩中心 →</span>
+          <span class="playable-cta-go">点击进入游戏中心 →</span>
         </div>
       </router-link>
     </section>

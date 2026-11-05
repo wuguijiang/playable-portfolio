@@ -1,16 +1,10 @@
-// 共享数据：试玩广告作品（真实可玩的 + 设计稿）
-// Home.vue / Works.vue / Play.vue 都会用到
+// 共享数据：试玩广告作品（全部为真实可玩的打包版本）
+// Home.vue / Play.vue / Tools.vue 都会用到
 // dimension: 2D 或 3D（替代之前的 duration / 时长）
 
 import tetrisCover from '../assets/covers/tetris.jpg'
 import beachToastCover from '../assets/covers/beach-toast.png'
-import sushiSortCover from '../assets/covers/sushi-sort.png'
-import tidyTownCover from '../assets/covers/tidy-town.png'
-import gemGardenCover from '../assets/covers/gem-garden.png'
-import stackRushCover from '../assets/covers/stack-rush.png'
-import candyPourCover from '../assets/covers/candy-pour.png'
-import puppyPathCover from '../assets/covers/puppy-path.png'
-import rabbitCover from '../assets/covers/rabbit.png'
+import rabbitCover from '../assets/covers/rabbit-search.png'
 import lianliankanCover from '../assets/covers/lianliankan-forest.png'
 import xiangqiCover from '../assets/covers/xiangqi.png'
 import daxiguaCover from '../assets/covers/daxigua.png'
@@ -19,12 +13,14 @@ import gobangCover from '../assets/covers/gobang.png'
 import cover2048 from '../assets/covers/2048.png'
 import meowMeowCover from '../assets/covers/meow-meow.png'
 import civilizationsWarCover from '../assets/covers/civilizations-war.png'
+import pindouCover from '../assets/covers/pindou-beads.png'
 
 export const works = [
   {
     id: 'meow-meow',
     title: 'MEOW TRIPLE',
     subtitle: '猫了个猫',
+    group: '小游戏',
     type: '消除',
     label: '点击 / 三消',
     dimension: '2D',
@@ -48,6 +44,7 @@ export const works = [
     id: 'civilizations-war',
     title: 'CIVILIZATIONS',
     subtitle: '远古文明战争',
+    group: '小游戏',
     type: '策略',
     label: '拖拽 / 出兵',
     dimension: '2D',
@@ -72,6 +69,7 @@ export const works = [
     id: '2048',
     title: '2048',
     subtitle: '合成 2048',
+    group: '小游戏',
     type: '合成',
     label: '滑动 / 合并',
     dimension: '2D',
@@ -95,6 +93,7 @@ export const works = [
     id: 'gobang',
     title: 'GOMOKU',
     subtitle: '欢乐五子棋',
+    group: '小游戏',
     type: '对弈',
     label: '点击 / 落子',
     dimension: '2D',
@@ -118,6 +117,7 @@ export const works = [
     id: 'feixingqi',
     title: 'AERO LUDO',
     subtitle: '欢乐飞行棋',
+    group: '小游戏',
     type: '对弈',
     label: '掷骰 / 竞速',
     dimension: '2D',
@@ -141,6 +141,7 @@ export const works = [
     id: 'tetris',
     title: 'TETRIS',
     subtitle: '俄罗斯方块',
+    group: '小游戏',
     type: '休闲',
     label: '旋转 / 消行',
     dimension: '2D',
@@ -164,6 +165,7 @@ export const works = [
     id: 'daxigua',
     title: 'MELON MERGE',
     subtitle: '合成大西瓜',
+    group: '小游戏',
     type: '合成',
     label: '拖动 / 合成',
     dimension: '2D',
@@ -187,6 +189,7 @@ export const works = [
     id: 'xiangqi',
     title: 'XIANGQI',
     subtitle: '欢乐象棋',
+    group: '小游戏',
     type: '对弈',
     label: '点击 / 走子',
     dimension: '2D',
@@ -210,6 +213,7 @@ export const works = [
     id: 'beach-toast',
     title: 'BEACH TOAST',
     subtitle: '海滩碰杯',
+    group: '试玩',
     type: '合成',
     label: '拖拽 / 碰杯',
     dimension: '2D',
@@ -237,29 +241,31 @@ export const works = [
     id: 'rabbit',
     title: 'RABBIT',
     subtitle: '小兔子试玩',
-    type: '闯关',
-    label: '跑酷 / 跳跃',
+    group: '试玩',
+    type: '寻物',
+    label: '点击 / 找兔',
     dimension: '2D',
     colors: ['#ffa95b', '#ffe29c'],
     cover: rabbitCover,
-    description: '用 Cocos Creator 真实打包的试玩广告。控制小兔子跳跃过障碍、收集萝卜，看你能拿多少分。',
-    longDescription: '这是一款基于 Cocos Creator 制作的轻量级跑酷试玩广告。玩家只需要点击屏幕就能让小兔子跳跃，长按可以二段跳。游戏采用关卡递进式设计，从简单的草丛障碍逐渐过渡到河流、围栏、滚动木头等复杂场景。',
+    description: '在热闹的小镇画面里对照目标栏找兔子：把指定外形和动作的小兔子从兔群与街景物件中逐只点出来，限时找齐。',
+    longDescription: '这是一款「找目标」的观察力试玩。画面是一座挤满兔子和街景物件的小镇，兔子会藏在房子、摊位、桌椅和电话亭周围，底部目标栏则列出这一局要找的几种兔子。玩家对照头像里的外形与动作，在画面中逐只找出同款；每找对一只，目标栏的对应头像就会打勾。顶部计时条会随时间缩短，目标是在计时结束前把指定的兔子全部找齐。',
     engine: 'Cocos Creator 3.x',
     platform: 'Web / H5',
-    tags: ['跑酷', '点击', '二段跳', '节奏'],
+    tags: ['寻物', '目标搜寻', '观察力', '限时'],
     hasPlayable: true,
     playableSrc: '/playable/rabbit.html',
-    iframeTip: '已挂载 · 鼠标点击屏幕跳跃',
+    iframeTip: '已挂载 · 对照底部目标栏，在画面里点出指定兔子',
     controls: [
-      '移动端：点击屏幕即可跳跃',
-      '桌面端：点击跳跃，长按可二段跳',
-      '吃到更多萝卜，刷新最佳成绩',
+      '先看底部目标栏，确认这一局要找的兔子外形和动作',
+      '在挤满兔子和街景物件的画面里寻找同款，点中后目标栏会打勾',
+      '顶部计时条会不断减少，在时间内把目标兔子全部找齐',
     ],
   },
   {
     id: 'lianliankan',
     title: 'ANIMAL LINK',
     subtitle: '森林连连看',
+    group: '小游戏',
     type: '消除',
     label: '点击 / 连线',
     dimension: '2D',
@@ -280,89 +286,35 @@ export const works = [
     ],
   },
   {
-    id: '1',
-    title: 'SUSHI SORT',
-    subtitle: '寿司分拣站',
-    type: '解压',
-    label: '拖拽 / 分类',
+    id: 'pindou',
+    title: 'JEWEL COLORING',
+    subtitle: '拼豆小游戏',
+    group: '试玩',
+    type: '拼图',
+    label: '点放 / 拼豆',
     dimension: '2D',
-    colors: ['#ff8566', '#ffcf6c'],
-    cover: sushiSortCover,
-    description: '把滚动台上的寿司按颜色和形状放进正确餐盒。三秒上手，越玩越想清空整条传送带。',
-    engine: 'Cocos Creator 3.8',
+    colors: ['#8b7ed9', '#fdbc08'],
+    cover: pindouCover,
+    description: '拼豆像素填图：先从豆条点选颜色，再点孔板把这种颜色的拼豆铺上去，跟着手势引导把图案一点点拼出来。',
+    longDescription: '这是一款拼豆（豆豆像素）主题的填图小游戏，淡紫色的清爽底色配上圆润立体的彩色拼豆。上方是按颜色分排的豆条，下方是带孔位的拼豆底板：点豆条取色、点孔板放豆，豆子会带着飞入动画落到孔板上，手势引导会一直提示当前该取哪一排颜色。左上角的菜单可以切换要拼的形状（试玩 / 菠萝），菠萝形状是一幅完整的豆豆像素画：格纹果身配青绿色的盆栽底座。界面是柔和的马卡龙配色，操作全程点按即可完成。游戏支持横竖屏切换：竖屏时豆条与底板上下排布，横屏时自动改为左右排布。',
+    engine: 'Cocos Creator 3.x',
     platform: 'Web / H5',
-    tags: ['拖拽', '分类', '即时反馈'],
-  },
-  {
-    id: '2',
-    title: 'TIDY TOWN',
-    subtitle: '整理小镇',
-    type: '经营',
-    label: '摆放 / 升级',
-    dimension: '3D',
-    colors: ['#7d9eff', '#b8e7ff'],
-    cover: tidyTownCover,
-    description: '从一间凌乱小屋开始，把物品摆到对的位置，逐步点亮整个微缩街区。',
-    engine: 'Cocos Creator 3.8',
-    platform: 'Web / H5',
-    tags: ['摆放', '成长线', '场景变换'],
-  },
-  {
-    id: '3',
-    title: 'GEM GARDEN',
-    subtitle: '宝石花园',
-    type: '三消',
-    label: '点击 / 合成',
-    dimension: '2D',
-    colors: ['#b988ff', '#f5bbff'],
-    cover: gemGardenCover,
-    description: '点击采集露珠，合成会发光的奇异植物，把一块荒地养成宝石花园。',
-    engine: 'Cocos Creator 3.8',
-    platform: 'Web / H5',
-    tags: ['点击', '合成', '稀有解锁'],
-  },
-  {
-    id: '4',
-    title: 'STACK RUSH',
-    subtitle: '堆叠冲刺',
-    type: '闯关',
-    label: '长按 / 释放',
-    dimension: '3D',
-    colors: ['#72daa7', '#e5ff9d'],
-    cover: stackRushCover,
-    description: '长按蓄力叠高方块，松手跨过障碍。高度刚好够用时的惊险感是核心。',
-    engine: 'Cocos Creator 3.8',
-    platform: 'Web / H5',
-    tags: ['长按', '节奏', '失败钩子'],
-  },
-  {
-    id: '5',
-    title: 'CANDY POUR',
-    subtitle: '糖果倾倒',
-    type: '解压',
-    label: '旋转 / 倒入',
-    dimension: '2D',
-    colors: ['#ff94c9', '#ffd2e7'],
-    cover: candyPourCover,
-    description: '旋转糖果罐，让每一颗糖精准落进同色容器。简单、清脆、停不下来。',
-    engine: 'Cocos Creator 3.8',
-    platform: 'Web / H5',
-    tags: ['旋转', '物理', '音效'],
-  },
-  {
-    id: '6',
-    title: 'PUPPY PATH',
-    subtitle: '小狗回家路',
-    type: '闯关',
-    label: '画线 / 引导',
-    dimension: '2D',
-    colors: ['#ffa95b', '#ffe29c'],
-    cover: puppyPathCover,
-    description: '一笔画出安全路线，带迷路的小狗绕开水坑和围栏，回到温暖的门口。',
-    engine: 'Cocos Creator 3.8',
-    platform: 'Web / H5',
-    tags: ['画线', '情绪驱动', '安全区'],
+    tags: ['拼豆', '像素拼图', '形状选择', '点按操作'],
+    hasPlayable: true,
+    playableSrc: '/playable/pindou.html',
+    iframeTip: '已挂载 · 点豆条取色，点孔板放豆',
+    orientationSwitch: {
+      defaultMode: 'portrait',
+      hint: '这个试玩支持横竖屏切换，可用试玩框下方按钮切换当前画面方向。',
+    },
+    controls: [
+      '点上方豆条选中一种颜色，再点下方孔板把这种颜色的拼豆铺到孔位上',
+      '左上角菜单可以切换要拼的形状（试玩 / 菠萝）',
+      '跟着手指引导依次取用颜色，把图案完整拼出来',
+    ],
   },
 ]
+
+export const gameGroups = ['全部', '小游戏', '试玩']
 
 export const workTypes = ['全部', ...Array.from(new Set(works.map((work) => work.type)))]
