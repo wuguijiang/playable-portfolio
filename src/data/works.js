@@ -14,6 +14,8 @@ import cover2048 from '../assets/covers/2048.png'
 import meowMeowCover from '../assets/covers/meow-meow.png'
 import civilizationsWarCover from '../assets/covers/civilizations-war.png'
 import pindouCover from '../assets/covers/pindou-beads.png'
+import refugeCover from '../assets/covers/refuge-survival.png'
+import vegetableNinjaCover from '../assets/covers/vegetable-ninja.png'
 
 export const works = [
   {
@@ -311,6 +313,58 @@ export const works = [
       '点上方豆条选中一种颜色，再点下方孔板把这种颜色的拼豆铺到孔位上',
       '左上角菜单可以切换要拼的形状（试玩 / 菠萝）',
       '跟着手指引导依次取用颜色，把图案完整拼出来',
+    ],
+  },
+  {
+    id: 'refuge',
+    title: 'ZOMBIE SURVIVAL',
+    subtitle: '尸控防线',
+    group: '试玩',
+    type: '经营',
+    label: '点击 / 建造',
+    dimension: '2D',
+    colors: ['#306f9f', '#e7a13d'],
+    cover: refugeCover,
+    description: '暴雪封城后的地下避难所经营试玩：靠村民持续产出金币，点火堆、用镐子开挖新空间，把简陋地窖扩建成地下堡垒。',
+    longDescription: '这是一款 2D 竖屏的避难所经营试玩。幸存者退守在地下空间，村民会持续产出金币；玩家点击底部的火堆、镐子等道具卡，用它们点亮房间、开挖标价的空槽。顶部显示金币和入住进度，随着设施与房间补齐，简陋的地窖会一步步扩建成更完整的避难所。',
+    engine: 'Cocos Creator 3.x',
+    platform: 'Web / H5',
+    tags: ['避难所', '经营建造', '资源管理', '僵尸生存'],
+    hasPlayable: true,
+    playableSrc: '/playable/refuge.html',
+    iframeTip: '已挂载 · 攒金币、点火堆，用镐子扩建避难所',
+    orientationSwitch: {
+      defaultMode: 'portrait',
+      hint: '这个试玩支持横竖屏切换，可用试玩框下方按钮切换当前画面方向。',
+    },
+    controls: [
+      '金币会随时间持续增加，攒够后就能继续改造地下空间',
+      '点击底部道具卡使用火堆等设施，让房间逐步运转起来',
+      '点镐子选中道具后再点标价空槽，花金币挖出新的地下空间',
+    ],
+  },
+  {
+    id: 'vegetable-ninja',
+    title: 'VEGETABLE NINJA',
+    subtitle: '蔬菜忍者',
+    group: '小游戏',
+    type: '反应',
+    label: '滑动 / 切菜',
+    dimension: '2D',
+    colors: ['#4c9a4f', '#f2b23e'],
+    cover: vegetableNinjaCover,
+    description: '竹林庭院里的切菜反应试玩：滑动刀光切开飞起的蔬菜，一次划过 3 颗触发连击加成；经典模式漏掉 3 颗或切到炸弹就结束。',
+    longDescription: '这是一款 2D 竖屏切菜反应小游戏。蔬菜会从下方不断抛向空中，滑动屏幕即可挥出刀光，把经过的蔬菜从中切开，切开的半块会带着果汁继续飞散。一次划过三颗以上会触发连击加分，连击越顺倍率越高；偶尔出现的金色星星提供 10 秒双倍分数，还会刮起密集的蔬菜风暴。经典模式漏掉三颗或切到炸弹就结束，禅意模式是 90 秒无炸弹的纯切菜练习，街机模式限时 60 秒、切到炸弹扣 8 秒。',
+    engine: 'Cocos Creator 3.x',
+    platform: 'Web / H5',
+    tags: ['切菜', '反应', '连击', '街机模式'],
+    hasPlayable: true,
+    playableSrc: '/playable/vegetable-ninja.html',
+    iframeTip: '已挂载 · 滑动切菜，避开炸弹',
+    controls: [
+      '在画面上滑动挥出刀光，把飞起的蔬菜切开',
+      '一次切中 3 颗以上触发连击，连得越顺倍率越高',
+      '经典模式漏 3 颗或切到炸弹结束；禅意 90 秒无炸弹；街机 60 秒炸弹扣 8 秒',
     ],
   },
 ]

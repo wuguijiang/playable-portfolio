@@ -448,7 +448,7 @@ code {
 :is(.card-art, .more-game-art) img:is(
   [src*="meow-meow"], [src*="2048"], [src*="gobang"],
   [src*="tetris"], [src*="daxigua"], [src*="xiangqi"], [src*="rabbit"],
-  [src*="civilizations-war"]
+  [src*="vegetable-ninja"], [src*="civilizations-war"]
 ) { object-position: center 3%; }
 .game-card:hover .card-art img { transform: scale(1.05); }
 .art-tag { position: absolute; top: 12px; left: 12px; padding: 5px 9px; border-radius: 999px; background: rgba(255, 255, 255, .92); color: var(--ink); font: 700 10.5px 'DM Mono', monospace; letter-spacing: .04em; }
