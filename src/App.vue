@@ -7,7 +7,6 @@ const route = useRoute()
 const menuOpen = ref(false)
 const navItems = [
   { label: '首页', anchor: 'top', page: 'home' },
-  { label: '技术栈', anchor: 'skills', page: 'home' },
   { label: '工具', anchor: null, page: 'tools' },
   { label: '游戏', anchor: null, page: 'play' },
   { label: '联系', anchor: 'contact', page: 'home' },

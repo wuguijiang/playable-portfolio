@@ -324,8 +324,8 @@ code {
 /* ============================================================
    Sections base —— 统一区块节奏
    ============================================================ */
-.about, .skills, .experience, .devflow, .works, .playable, .process, .contact { padding: var(--section) 0; }
-.about + .skills, .skills + .experience, .experience + .devflow, .devflow + .works, .works + .playable, .playable + .process, .process + .contact { border-top: 1px solid var(--line-2); }
+.about, .experience, .works, .process, .contact { padding: var(--section) 0; }
+.hero + .works, .works + .about, .about + .experience, .experience + .process, .process + .contact { border-top: 1px solid var(--line-2); }
 
 /* ---------- About ---------- */
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -345,29 +345,6 @@ code {
 .about-card li { position: relative; padding-left: 22px; color: var(--ink-2); font-size: 14.5px; }
 .about-card li::before { content: ''; position: absolute; left: 0; top: 9px; width: 12px; height: 2px; background: var(--primary); }
 
-/* ---------- Skills ---------- */
-.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.skill-card { padding: 26px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); transition: border-color .2s, transform .2s, box-shadow .2s; }
-.skill-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-.skill-card-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 22px; }
-.skill-tag {
-  display: inline-grid; place-items: center;
-  width: 46px; height: 46px;
-  border-radius: var(--radius-sm);
-  background: var(--primary-soft);
-  color: var(--primary);
-  font: 800 11px 'DM Mono', monospace;
-  letter-spacing: .08em;
-}
-.skill-card h3 { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
-.skill-card-head p { color: var(--muted); font-size: 13px; margin-top: 4px; }
-.skill-list { display: grid; gap: 16px; }
-.skill-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
-.skill-name { font-size: 14px; font-weight: 700; color: var(--ink); }
-.skill-note { color: var(--muted); font: 500 11px 'DM Mono', monospace; letter-spacing: .04em; }
-.skill-bar { height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden; }
-.skill-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), #5aa9ff); border-radius: 999px; transition: width .6s ease; }
-
 /* ---------- Experience ---------- */
 .exp-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .exp-item { display: grid; grid-template-columns: 64px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); }
@@ -379,47 +356,6 @@ code {
 .exp-body p { color: var(--ink-2); font-size: 14.5px; line-height: 1.85; }
 .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .exp-tags span { padding: 4px 10px; border-radius: 999px; background: var(--soft); color: var(--ink-2); font: 500 11.5px 'DM Mono', monospace; letter-spacing: .04em; }
-
-/* ---------- Dev Flow ---------- */
-.devflow-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-  counter-reset: flow;
-}
-.devflow-card {
-  position: relative;
-  padding: 26px 24px 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg);
-  transition: border-color .2s, transform .2s, box-shadow .2s;
-}
-.devflow-card:hover {
-  border-color: var(--accent-color, var(--primary));
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -18px rgba(15, 23, 42, .15);
-}
-.devflow-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.devflow-step {
-  display: inline-grid; place-items: center;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--accent-color, var(--primary)) 12%, var(--bg));
-  color: var(--accent-color, var(--primary));
-  font: 800 12.5px 'DM Mono', monospace;
-  letter-spacing: .04em;
-  border: 1px solid color-mix(in srgb, var(--accent-color, var(--primary)) 30%, transparent);
-}
-.devflow-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent);
-}
-.devflow-card h3 { font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
-.devflow-card p { margin-top: 10px; color: var(--ink-2); font-size: 14px; line-height: 1.8; }
-.devflow-line {
-  position: absolute; top: 44px; right: -10px; width: 20px; height: 1px;
-  background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px);
-  pointer-events: none;
-}
 
 /* ---------- Works / Filters / Cards ---------- */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 36px; }
@@ -476,60 +412,6 @@ code {
 .game-card.router-link-exact-active,
 .game-card { cursor: pointer; }
 .game-card .card-info small { display: none; }
-
-/* ---------- Home: Playable CTA ---------- */
-.playable-cta {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 32px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: var(--bg);
-  color: inherit;
-  transition: border-color .25s, transform .25s, box-shadow .25s;
-}
-.playable-cta:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-.playable-cta-art {
-  position: relative;
-  aspect-ratio: 9 / 16;
-  border-radius: 16px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #ffa95b, #ffe29c);
-}
-.playable-cta-art img { width: 100%; height: 100%; object-fit: cover; }
-.playable-cta-tag {
-  position: absolute; top: 12px; left: 12px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, .78);
-  color: #fff;
-  font: 700 11px 'DM Mono', monospace;
-  letter-spacing: .04em;
-}
-.playable-cta-pulse {
-  position: absolute; inset: 50% auto auto 50%;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, .8);
-  animation: cta-pulse 1.6s ease-out infinite;
-}
-@keyframes cta-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, .7); }
-  100% { box-shadow: 0 0 0 28px rgba(255, 255, 255, 0); }
-}
-.playable-cta-body { display: flex; flex-direction: column; justify-content: center; gap: 8px; }
-.playable-cta-body .eyebrow { margin: 0; }
-.playable-cta-body h3 { font-size: 28px; font-weight: 900; letter-spacing: -.035em; }
-.playable-cta-body p { color: var(--ink-2); font-size: 15px; line-height: 1.8; }
-.playable-cta-go {
-  margin-top: 6px;
-  color: var(--primary);
-  font: 700 14px 'DM Mono', monospace;
-  letter-spacing: .04em;
-}
 
 /* ---------- Process ---------- */
 .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -1385,11 +1267,8 @@ code {
   :root { --section: 64px; }
 
   .hero { grid-template-columns: 1fr; padding: 48px 0 64px; gap: 36px; }
-  .skills-grid { grid-template-columns: 1fr 1fr; }
   .about-grid { grid-template-columns: 1fr; }
   .process-grid { grid-template-columns: 1fr; }
-  .devflow-grid { grid-template-columns: repeat(2, 1fr); }
-  .devflow-line { display: none; }
   .works-grid { grid-template-columns: 1fr; }
   .contact-list { grid-template-columns: 1fr 1fr; }
   .game-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1397,7 +1276,6 @@ code {
   .play-stage { grid-template-columns: 1fr; }
   .play-frame { width: min(320px, 100%); margin: 0 auto; }
   .play-frame.is-landscape { width: min(560px, 100%); }
-  .playable-cta { grid-template-columns: 220px 1fr; gap: 24px; }
 
   /* 顶栏切到汉堡菜单 */
   .topbar nav { display: none; }
@@ -1417,8 +1295,8 @@ code {
   .hero-actions { gap: 10px; }
   .hero-meta { display: none; }
   .btn { padding: 11px 18px; font-size: 13.5px; }
-  .skills-grid, .game-grid, .contact-list, .more-games-grid { grid-template-columns: 1fr 1fr; }
-  .devflow-grid, .works-grid { grid-template-columns: 1fr; }
+  .game-grid, .contact-list, .more-games-grid { grid-template-columns: 1fr 1fr; }
+  .works-grid { grid-template-columns: 1fr; }
   .works-stats { grid-template-columns: repeat(2, 1fr); }
   .works-stats > div:nth-child(2) { border-right: 0; }
   .works-stats > div:nth-child(1), .works-stats > div:nth-child(2) { border-bottom: 1px solid var(--line-2); }
@@ -1427,8 +1305,6 @@ code {
   .contact-card { padding: 36px 24px; }
   .works-cta-card { padding: 36px 24px; }
   .footer { flex-direction: column; gap: 8px; align-items: flex-start; }
-  .playable-cta { grid-template-columns: 1fr; }
-  .playable-cta-art { max-width: 220px; margin: 0 auto; }
   .play-spec { grid-template-columns: 1fr 1fr; }
   .play-frame-actions { align-items: flex-start; flex-direction: column; }
   .play-frame-buttons { width: 100%; }
@@ -1438,7 +1314,7 @@ code {
 }
 
 @media (max-width: 420px) {
-  .skills-grid, .game-grid, .contact-list, .more-games-grid { grid-template-columns: 1fr; }
+  .game-grid, .contact-list, .more-games-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

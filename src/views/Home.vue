@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { works, workTypes } from '../data/works.js'
+import { works } from '../data/works.js'
 
 const profile = {
   name: '梨花詩',
@@ -77,50 +77,6 @@ const basics = [
   { label: '驻地', value: '可实习 · 可全职' },
 ]
 
-const skillGroups = [
-  {
-    id: 'web',
-    tag: 'WEB',
-    title: '前端 / Web Coding',
-    hint: '日常写代码的底座',
-    items: [
-      { name: 'HTML', level: 5, note: '语义化 / 无障碍' },
-      { name: 'CSS', level: 5, note: '布局 / 动画 / 响应式' },
-      { name: 'JavaScript', level: 5, note: 'ES2022+ / 异步' },
-      { name: 'TypeScript', level: 4, note: '类型体操 / 泛型' },
-      { name: 'Vue', level: 4, note: '组合式 API / 生态' },
-      { name: 'Web Coding', level: 4, note: 'Canvas / WebGL 基础' },
-    ],
-  },
-  {
-    id: 'ai',
-    tag: 'AI',
-    title: 'AI 辅助开发',
-    hint: '把主流模型和 Agent 串进日常的开发链',
-    items: [
-      { name: '主流模型调用', level: 5, note: 'DeepSeek · GPT · MiniMax · 豆包 · 征途' },
-      { name: 'AI 编码 Agent', level: 5, note: 'Codex · Trea · Workbody' },
-      { name: '提示词工程', level: 5, note: '模板库 / 复杂任务拆解' },
-      { name: 'AI 辅助 Debug', level: 4, note: '报错定位 / 性能分析' },
-      { name: '工具串联', level: 4, note: 'Cocos MCP / 工作流自动化' },
-    ],
-  },
-  {
-    id: 'cocos',
-    tag: 'COCOS',
-    title: 'Cocos Creator',
-    hint: '游戏开发主引擎',
-    items: [
-      { name: 'Cocos Creator', level: 5, note: '编辑器 / 场景 / 预制体' },
-      { name: 'TypeScript 游戏开发', level: 4, note: '组件 / 生命周期' },
-      { name: 'Cocos MCP', level: 4, note: 'AI 串联工作流' },
-      { name: 'UI 框架', level: 4, note: 'Button / Layout / List' },
-      { name: '动画系统', level: 4, note: 'Tween / Spine' },
-      { name: '物理 / 碰撞', level: 3, note: 'Box2D / 射线检测' },
-    ],
-  },
-]
-
 const experiences = [
   {
     id: 'exp-playable',
@@ -138,32 +94,21 @@ const experiences = [
   },
 ]
 
-const devFlow = [
-  { step: '01', title: '确认需求', color: '#1677ff', desc: '先聊清楚玩法核心、目标用户、平台与内容，落到一份能直接动手写的需求文档。' },
-  { step: '02', title: '搭建框架', color: '#16a34a', desc: '搭场景、写组件原型、定资源规范、跑通一个最小可玩的 Demo，再往上垒功能。' },
-  { step: '03', title: '开发迭代', color: '#8b5cf6', desc: '按模块推进玩法 / UI / 动画 / 音效，每完成一块就内测一次，不留到最后才发。' },
-  { step: '04', title: '平台适配', color: '#f59e0b', desc: '针对不同分辨率、机型与渠道做适配，处理刘海屏、安全区、横竖屏与加载策略。' },
-  { step: '05', title: '功能测试', color: '#ec4899', desc: '用例覆盖主流程、异常路径与边界条件，整理缺陷清单，让 Bug 暴露在小范围内。' },
-  { step: '06', title: '打包验证', color: '#06b6d4', desc: '正式打包后做真机验证、性能跑分与首帧时延，确保上线后用户能直接玩到。' },
-]
-
 const process = [
   { step: '01', title: '看见玩法', desc: '用熟悉物件和清晰目标，让用户一眼看懂要做什么。' },
   { step: '02', title: '动手有反馈', desc: '第一次操作就要有触感、音效、视觉奖励，建立控制感。' },
   { step: '03', title: '留一个钩子', desc: '在最爽的地方停下，把"差一点就赢"变成下载动机。' },
 ]
 
-// 主页精选：只展示 4 个，避免跟 Works 页完全重复
-const featuredWorks = computed(() => works.slice(0, 4))
-const ctaPlayable = computed(() => works.find((game) => game.id === 'beach-toast') || works.find((game) => game.hasPlayable) || works[0])
-const ctaPlayableHref = computed(() => {
-  const idx = works.findIndex((game) => game.id === ctaPlayable.value?.id)
-  return `/play?game=${idx >= 0 ? idx : 0}`
-})
+// 首页精选：手动指定代表作，按作品 id 对应到游戏页索引
+const featuredIds = ['vegetable-ninja', 'refuge', 'rabbit', 'pindou']
+const featuredWorks = computed(() => featuredIds
+  .map((id) => works.find((game) => game.id === id))
+  .filter(Boolean))
 
-const skillMax = 5
-function skillPercent(level) {
-  return Math.round((level / skillMax) * 100)
+function workHref(game) {
+  const idx = works.findIndex((work) => work.id === game.id)
+  return `/play?game=${idx >= 0 ? idx : 0}`
 }
 </script>
 
@@ -174,7 +119,7 @@ function skillPercent(level) {
       <div class="hero-copy">
         <p class="eyebrow">
           <span class="dot" aria-hidden="true"></span>
-          RESUME / 2027 · COCOS GAME DEVELOPER
+          PORTFOLIO / 2027 · COCOS GAME DEVELOPER
         </p>
         <h1>
           <span class="has-gradient-text has-text-sheen" data-sheen="梨花詩">梨花詩</span>
@@ -184,7 +129,7 @@ function skillPercent(level) {
           前端写 Vue、游戏用 Cocos Creator、AI 用 Codex 提效。
         </p>
         <div class="hero-actions">
-          <router-link class="btn btn-primary has-btn-sheen" to="/tools">查看工具</router-link>
+          <router-link class="btn btn-primary has-btn-sheen" to="/play">试玩作品</router-link>
           <button class="btn btn-ghost" type="button" @click="openMailModal">发邮件 ↗</button>
           <span class="hero-meta">Cocos Creator · TS · Vue · Codex</span>
         </div>
@@ -219,10 +164,48 @@ function skillPercent(level) {
       </aside>
     </section>
 
+    <!-- FEATURED WORKS -->
+    <section id="works" class="works shell">
+      <header class="section-head section-head-row">
+        <div>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 01 / WORKS</p>
+          <h2>Cocos 游戏与试玩精选</h2>
+          <p class="section-note">从 {{ works.length }} 个可玩作品里挑了 4 个不同玩法，点开直接上手。</p>
+        </div>
+        <router-link to="/play" class="works-all-link">
+          全部 {{ works.length }} 个作品
+          <span aria-hidden="true">→</span>
+        </router-link>
+      </header>
+
+      <div class="game-grid">
+        <router-link
+          v-for="(game, idx) in featuredWorks"
+          :key="game.id"
+          :to="workHref(game)"
+          class="game-card"
+          :style="{ '--primary': game.colors[0], '--secondary': game.colors[1] }"
+        >
+          <div class="card-art">
+            <img :src="game.cover" :alt="`${game.subtitle}游戏封面`" />
+            <span class="art-tag">COCOS · {{ game.dimension }}</span>
+          </div>
+          <div class="card-info">
+            <div>
+              <p>{{ game.type }} · {{ game.label }}</p>
+              <h3>{{ game.title }}</h3>
+              <span>{{ game.subtitle }}</span>
+            </div>
+            <span class="card-id">{{ String(idx + 1).padStart(2, '0') }}</span>
+          </div>
+        </router-link>
+      </div>
+    </section>
+
     <!-- ABOUT -->
     <section id="about" class="about shell">
       <header class="section-head">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 01 / ABOUT</p>
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 02 / ABOUT</p>
         <h2>关于我</h2>
         <p class="section-note">{{ profile.tagline }}</p>
       </header>
@@ -255,37 +238,6 @@ function skillPercent(level) {
       </div>
     </section>
 
-    <!-- SKILLS -->
-    <section id="skills" class="skills shell">
-      <header class="section-head">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 02 / SKILLS</p>
-        <h2>技术栈</h2>
-        <p class="section-note">分成三块：Web 前端 / AI 辅助 / Cocos Creator。</p>
-      </header>
-      <div class="skills-grid">
-        <article v-for="group in skillGroups" :key="group.id" class="skill-card">
-          <header class="skill-card-head">
-            <span class="skill-tag">{{ group.tag }}</span>
-            <div>
-              <h3>{{ group.title }}</h3>
-              <p>{{ group.hint }}</p>
-            </div>
-          </header>
-          <ul class="skill-list">
-            <li v-for="skill in group.items" :key="skill.name">
-              <div class="skill-row">
-                <span class="skill-name">{{ skill.name }}</span>
-                <span class="skill-note">{{ skill.note }}</span>
-              </div>
-              <div class="skill-bar" :aria-label="`${skill.name} 熟练度 ${skill.level} / ${skillMax}`">
-                <span :style="{ width: skillPercent(skill.level) + '%' }"></span>
-              </div>
-            </li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
     <!-- EXPERIENCE -->
     <section class="experience shell">
       <header class="section-head">
@@ -310,93 +262,12 @@ function skillPercent(level) {
       </ol>
     </section>
 
-    <!-- DEV FLOW -->
-    <section class="devflow shell">
-      <header class="section-head">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 03.5 / DEV FLOW</p>
-        <h2>我开发一个游戏的流程</h2>
-        <p class="section-note">从拿到需求到正式上线，我习惯拆成这 6 步走，每一步都有交付物。</p>
-      </header>
-      <ol class="devflow-grid">
-        <li v-for="(step, idx) in devFlow" :key="step.step" class="devflow-card">
-          <span class="devflow-line" v-if="idx < devFlow.length - 1" aria-hidden="true"></span>
-          <header class="devflow-head">
-            <span class="devflow-step" :style="{ '--accent-color': step.color }">{{ step.step }}</span>
-            <span class="devflow-dot" :style="{ background: step.color }" aria-hidden="true"></span>
-          </header>
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.desc }}</p>
-        </li>
-      </ol>
-    </section>
-
-    <!-- FEATURED WORKS -->
-    <section id="works" class="works shell">
-      <header class="section-head section-head-row">
-        <div>
-          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 04 / WORKS</p>
-          <h2>Cocos 试玩广告精选</h2>
-          <p class="section-note">这里先放 4 个代表作，直接进入游戏中心体验。</p>
-        </div>
-        <router-link to="/play" class="works-all-link">
-          进入游戏中心
-          <span aria-hidden="true">→</span>
-        </router-link>
-      </header>
-
-      <div class="game-grid">
-        <router-link
-          v-for="(game, idx) in featuredWorks"
-          :key="game.id"
-          :to="`/play?game=${idx}`"
-          class="game-card"
-          :style="{ '--primary': game.colors[0], '--secondary': game.colors[1] }"
-        >
-          <div class="card-art">
-            <img :src="game.cover" :alt="`${game.subtitle}游戏封面`" />
-            <span class="art-tag">COCOS · {{ game.dimension }}</span>
-          </div>
-          <div class="card-info">
-            <div>
-              <p>{{ game.type }} · {{ game.label }}</p>
-              <h3>{{ game.title }}</h3>
-              <span>{{ game.subtitle }}</span>
-            </div>
-            <span class="card-id">{{ String(idx + 1).padStart(2, '0') }}</span>
-          </div>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- PLAYABLE PLACEHOLDER -->
-    <section id="playable" class="playable shell">
-      <header class="section-head">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 05 / PLAYABLE DEMO</p>
-        <h2>亲自试一下我做的 Cocos 游戏</h2>
-        <p class="section-note">下面是我用 Cocos Creator 真实打包的 9:16 试玩广告，点开就能玩。</p>
-      </header>
-
-      <router-link :to="ctaPlayableHref" class="playable-cta">
-        <div class="playable-cta-art">
-          <img :src="ctaPlayable.cover" :alt="`${ctaPlayable.subtitle}试玩封面`" />
-          <span class="playable-cta-tag">9:16 · {{ ctaPlayable.dimension }} {{ ctaPlayable.type }}</span>
-          <span class="playable-cta-pulse" aria-hidden="true"></span>
-        </div>
-        <div class="playable-cta-body">
-          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> {{ ctaPlayable.title }} · COCOS PLAYABLE</p>
-          <h3>{{ ctaPlayable.subtitle }}</h3>
-          <p>{{ ctaPlayable.description }}</p>
-          <span class="playable-cta-go">点击进入游戏中心 →</span>
-        </div>
-      </router-link>
-    </section>
-
     <!-- PROCESS -->
     <section class="process shell">
       <header class="section-head">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 06 / HOW I WORK</p>
-        <h2>我做试玩广告的方法</h2>
-        <p class="section-note">每一秒都分配了任务：让用户 <strong>看懂、动手、想赢</strong>。</p>
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> 04 / HOW I WORK</p>
+        <h2>我做一个玩法的方法</h2>
+        <p class="section-note">先让用户 <strong>看懂、愿意动手</strong>，再留一个想继续的钩子。</p>
       </header>
       <div class="process-grid">
         <article v-for="step in process" :key="step.step" class="process-card">
