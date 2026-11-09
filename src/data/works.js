@@ -16,6 +16,7 @@ import civilizationsWarCover from '../assets/covers/civilizations-war.png'
 import pindouCover from '../assets/covers/pindou-beads.png'
 import refugeCover from '../assets/covers/refuge-survival.png'
 import vegetableNinjaCover from '../assets/covers/vegetable-ninja.png'
+import royalDuelCover from '../assets/covers/royal-duel.png'
 
 export const works = [
   {
@@ -365,6 +366,31 @@ export const works = [
       '在画面上滑动挥出刀光，把飞起的蔬菜切开',
       '一次切中 3 颗以上触发连击，连得越顺倍率越高',
       '经典模式漏 3 颗或切到炸弹结束；禅意 90 秒无炸弹；街机 60 秒炸弹扣 8 秒',
+    ],
+  },
+  {
+    id: 'royal-duel',
+    title: 'ROYAL DUEL',
+    subtitle: '卡牌对决',
+    group: '试玩',
+    type: '卡牌',
+    label: '拖拽 / 出牌',
+    dimension: '2D',
+    orientation: 'landscape', // 横屏作品：Play 页手机框自动横置 16:9
+    colors: ['#8e6bb8', '#5cb85c'],
+    cover: royalDuelCover,
+    description: '横屏卡牌攻防试玩：把数字牌拖到三条车道上，只有同花色的牌才能击杀皇家牌，连打同花色还能叠加共鸣加伤。',
+    longDescription: '这是一款基于 Cocos Creator 3.8.8 制作的横屏卡牌攻防试玩，设计分辨率 1280×720（16:9），仅支持横屏。三条车道各驻守一叠皇家牌（J / Q / K，血量 15 / 20 / 25），玩家手里是三张数字牌，拖到任意车道即可打出。核心规则是「同花色才能击杀」：牌面点数就是伤害，花色不对只会把皇家牌削到 1 点血、永远打不死，必须换同花色的牌来收尾。连着打同一花色还会触发「花色共鸣」，每多一张该花色的牌伤害 +2、最多 +6，所以先打哪张、下一张打哪条车道都成了取舍。回合结束时没挨过打的车道顶牌会「王室反扑」回血，逼着玩家三条道都顾到；用不上的牌可以先压进暂存堆，但只有最上面那张还能取回。普通 / 困难 / 极限三档难度、10 个关卡按通关解锁，同一关每次洗出来的牌序固定，按回合数评 1~3 星并存在本地。',
+    engine: 'Cocos Creator 3.8.8',
+    platform: 'Web / H5',
+    tags: ['卡牌对战', '拖拽出牌', '同花色击杀', '关卡星级'],
+    hasPlayable: true,
+    playableSrc: '/playable/royal-duel/index.html',
+    iframeTip: '已挂载 · 把手牌拖到车道，同花色的牌才能击杀',
+    controls: [
+      '把手牌拖到任意一条车道打出去，轻点手牌可以选中后再点车道',
+      '花色相同的牌才能击杀皇家牌，花色不对只能把它削到 1 点血',
+      '连着打同花色触发共鸣加伤；用不上的牌拖进暂存堆，但只能取回最上面那张',
     ],
   },
 ]
