@@ -385,7 +385,7 @@ export const works = [
     platform: 'Web / H5',
     tags: ['卡牌对战', '拖拽出牌', '同花色击杀', '关卡星级'],
     hasPlayable: true,
-    playableSrc: '/playable/royal-duel/index.html',
+    playableSrc: '/playable/royal-duel.html',
     iframeTip: '已挂载 · 把手牌拖到车道，同花色的牌才能击杀',
     controls: [
       '把手牌拖到任意一条车道打出去，轻点手牌可以选中后再点车道',
