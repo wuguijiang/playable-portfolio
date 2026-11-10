@@ -17,6 +17,7 @@ import pindouCover from '../assets/covers/pindou-beads.png'
 import refugeCover from '../assets/covers/refuge-survival.png'
 import vegetableNinjaCover from '../assets/covers/vegetable-ninja.png'
 import royalDuelCover from '../assets/covers/royal-duel.png'
+import ballsCover from '../assets/covers/balls.png'
 
 export const works = [
   {
@@ -372,7 +373,7 @@ export const works = [
     id: 'royal-duel',
     title: 'ROYAL DUEL',
     subtitle: '卡牌对决',
-    group: '试玩',
+    group: '小游戏',
     type: '卡牌',
     label: '拖拽 / 出牌',
     dimension: '2D',
@@ -391,6 +392,30 @@ export const works = [
       '把手牌拖到任意一条车道打出去，轻点手牌可以选中后再点车道',
       '花色相同的牌才能击杀皇家牌，花色不对只能把它削到 1 点血',
       '连着打同花色触发共鸣加伤；用不上的牌拖进暂存堆，但只能取回最上面那张',
+    ],
+  },
+  {
+    id: 'balls',
+    title: 'TILT MAZE',
+    subtitle: '小球闯关',
+    group: '小游戏',
+    type: '益智',
+    label: '倾斜 / 滚球',
+    dimension: '3D',
+    colors: ['#8fb8dc', '#f2614a'],
+    cover: ballsCover,
+    description: '3D 倾斜迷宫：拖动屏幕让盘面倾斜，把红球滚进绿色出口，一共 10 关，掉进洞里从头再来。',
+    longDescription: '这是一款用 Three.js 写的 3D 倾斜迷宫小游戏。盘面就是一块立着的迷宫托盘：白色陶瓷隔墙把地面分隔成 S 形通道，浅色石材底板上带细网格，红色的高光小球停在通道里。玩家按住屏幕拖动，整个盘面就跟着倾斜，小球靠重力加速滚出去——倾斜的角度和松手的时机决定了它是顺着通道滑下去，还是撞墙、弹跳、甚至滚进地洞里重来。盘面上有两个带橙色描边的黑洞，掉进去本关从头开始；顶部的薄荷绿圆环是终点，把球滚进去就过关。一共 10 关，难度从一面直墙的热身慢慢加到多道隔墙的折返路线，界面上实时显示本关编号和计时。整体是清爽的浅蓝配色配陶瓷质感，材质带真实的高光与投影，滚动、碰撞、落洞、通关都有对应音效。',
+    engine: 'Three.js',
+    platform: 'Web / H5',
+    tags: ['3D', '倾斜迷宫', '滚球', '物理操控'],
+    hasPlayable: true,
+    playableSrc: '/playable/balls.html',
+    iframeTip: '已挂载 · 按住屏幕拖动，让盘面倾斜',
+    controls: [
+      '按住屏幕任意位置拖动，整个盘面会跟着倾斜，松手回正',
+      '靠重力把红球滚进顶部的绿色圆环就算过关，一共 10 关',
+      '掉进带橙色描边的黑洞会回到本关起点，慢慢倾斜比猛甩更好控制',
     ],
   },
 ]
